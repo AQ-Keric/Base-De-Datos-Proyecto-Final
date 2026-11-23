@@ -9,11 +9,11 @@ require 'db.php';
 $mensaje = "";
 $error_ocurrido = false;
 
-// --- 1. LÓGICA DE CREATE Y DELETE ---
+// Guardar cambios
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $accion = $_POST['accion'] ?? '';
 
-    // CREAR CARGO
+    // Crear
     if ($accion === 'crear') {
         $nombre = trim($_POST['nombre_cargo'] ?? '');
 
@@ -27,7 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             if (@oci_execute($stmt)) {
                 oci_commit($conn);
-                $mensaje = "Cargo '$nombre' registrado con éxito.";
+                $mensaje = "Cargo '$nombre' registrado con exito.";
             } else {
                 $e = oci_error($stmt);
                 $error_ocurrido = true;
@@ -38,7 +38,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
-    // ELIMINAR CARGO
+    // Eliminar
     if ($accion === 'eliminar') {
         $id_cargo = filter_input(INPUT_POST, 'id_cargo_eliminar', FILTER_VALIDATE_INT);
         $sql = 'DELETE FROM CA_EA_ST_IY_CARGO WHERE id_cargo = :p_id';
@@ -70,7 +70,7 @@ if (isset($_GET['mensaje'])) {
     $error_ocurrido = $_GET['error'] == '1';
 }
 
-// --- 2. LISTAR CARGOS ---
+// Listado
 $cargos = [];
 $sql_list = "SELECT id_cargo, nombre_cargo FROM CA_EA_ST_IY_CARGO ORDER BY id_cargo";
 $stmt_list = oci_parse($conn, $sql_list);
@@ -94,14 +94,14 @@ oci_free_statement($stmt_list);
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
         <div class="container">
-            <a class="navbar-brand" href="dashboard.php">Sistema Viña</a>
+            <a class="navbar-brand" href="dashboard.php">Sistema Vina</a>
             <span class="navbar-text text-white">Mantenedor de Cargos</span>
         </div>
     </nav>
 
     <div class="container mt-4">
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h2>👔 Mantenedor de Cargos</h2>
+            <h2>Mantenedor de Cargos</h2>
             <a href="dashboard.php" class="btn btn-secondary">Volver al Panel</a>
         </div>
 

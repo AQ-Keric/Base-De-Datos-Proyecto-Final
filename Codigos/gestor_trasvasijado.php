@@ -12,9 +12,8 @@ $error_ocurrido = false;
 $lotes = []; 
 $contenedores = [];
 
-// --- 1. LÓGICA DEL TRASVASIJADO ---
+// Trasvasijado
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    
     $id_lote = filter_input(INPUT_POST, 'id_lote', FILTER_VALIDATE_INT);
     $nuevo_contenedor = filter_input(INPUT_POST, 'nuevo_contenedor', FILTER_VALIDATE_INT);
 
@@ -22,7 +21,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $error_ocurrido = true;
         $mensaje = "Error: Lote y Nuevo Contenedor son obligatorios.";
     } else {
-
         $sql = 'BEGIN CA_EA_ST_IY_PKG_VINA.CA_EA_ST_IY_SP_GESTION_TRASVASIJADO(:p_lote, :p_cont); END;';
         $stmt = oci_parse($conn, $sql);
         
@@ -30,28 +28,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         oci_bind_by_name($stmt, ':p_cont', $nuevo_contenedor);
         
         if (@oci_execute($stmt)) {
-            $mensaje = "Trasvasijado del Lote $id_lote al Contenedor $nuevo_contenedor realizado con éxito. (Auditoría registrada).";
+            $mensaje = "Trasvasijado del Lote $id_lote al Contenedor $nuevo_contenedor realizado con exito.";
         } else {
             $e = oci_error($stmt);
             $error_ocurrido = true;
-            $mensaje = "Error al Trasvasijar: " . $e['message'];
+            $mensaje = "Error al trasvasijar: " . $e['message'];
         }
         oci_free_statement($stmt);
     }
-    
 
     header('Location: gestor_trasvasijado.php?mensaje=' . urlencode($mensaje) . '&error=' . ($error_ocurrido ? '1' : '0'));
     exit;
 }
-
-// --- 2. LÓGICA DE CARGA DE DATOS ---
 
 if (isset($_GET['mensaje'])) {
     $mensaje = $_GET['mensaje'];
     $error_ocurrido = $_GET['error'] == '1';
 }
 
-// Cargar Lotes disponibles para trasvasijar
+// Cargar datos
 $sql_lotes = "SELECT l.id_lote, l.litros_actuales, l.estado, v.nombre_variedad, 
                      c.material || ' (Cap: ' || c.capacidad || 'L)' AS contenedor_actual
               FROM CA_EA_ST_IY_LOTE l
@@ -68,7 +63,6 @@ while ($row = oci_fetch_assoc($stmt_lotes)) {
 }
 oci_free_statement($stmt_lotes);
 
-// Cargar Contenedores que NO estén ocupados 
 $cursor_cont = oci_new_cursor($conn);
 $sql_cont = 'BEGIN CA_EA_ST_IY_PKG_VINA.CA_EA_ST_IY_SP_REPORTE_OCUPACION_BODEGA(:cursor); END;'; 
 $stmt_cont = oci_parse($conn, $sql_cont);
@@ -83,9 +77,6 @@ while ($row = oci_fetch_assoc($cursor_cont)) {
 }
 oci_free_statement($stmt_cont);
 oci_free_statement($cursor_cont);
-
-
-
 ?>
 <!DOCTYPE html>
 <html lang="es">

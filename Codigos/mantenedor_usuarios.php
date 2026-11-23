@@ -9,7 +9,7 @@ require 'db.php';
 $mensaje = "";
 $error_ocurrido = false;
 
-// --- 0. CARGAR PERFILES ---
+// Perfiles
 $perfiles = [];
 $sql_perf = "SELECT id_perfil, nombre_perfil FROM CA_EA_ST_IY_PERFIL ORDER BY id_perfil";
 $stmt_perf = oci_parse($conn, $sql_perf);
@@ -20,11 +20,11 @@ if (@oci_execute($stmt_perf)) {
 }
 oci_free_statement($stmt_perf);
 
-// --- 1. LÓGICA DE CREATE Y DELETE ---
+// Guardar cambios
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $accion = $_POST['accion'] ?? '';
 
-    // CREAR USUARIO
+    // Crear
     if ($accion === 'crear') {
         $nombre = trim($_POST['nombre'] ?? '');
         $email = trim($_POST['email'] ?? '');
@@ -44,12 +44,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             if (@oci_execute($stmt)) {
                 oci_commit($conn);
-                $mensaje = "Usuario '$nombre' registrado con éxito.";
+                $mensaje = "Usuario '$nombre' registrado con exito.";
             } else {
                 $e = oci_error($stmt);
                 $error_ocurrido = true;
                 if (strpos($e['message'], 'unique constraint') !== false || strpos($e['message'], 'ORA-00001') !== false) {
-                    $mensaje = "Error: El correo electrónico ya está registrado.";
+                    $mensaje = "Error: El correo electronico ya esta registrado.";
                 } else {
                     $mensaje = "Error al crear usuario: " . $e['message'];
                 }
@@ -59,13 +59,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
-    // ELIMINAR USUARIO
+    // Eliminar
     if ($accion === 'eliminar') {
         $id_usuario = filter_input(INPUT_POST, 'id_usuario_eliminar', FILTER_VALIDATE_INT);
 
         if ($id_usuario == $_SESSION['id_usuario']) {
             $error_ocurrido = true;
-            $mensaje = "Error: No puedes eliminar tu propio usuario en sesión activa.";
+            $mensaje = "Error: No puedes eliminar tu propio usuario en sesion activa.";
         } else {
             $sql = 'DELETE FROM CA_EA_ST_IY_USUARIOS WHERE id_usuario = :p_id';
             $stmt = oci_parse($conn, $sql);
@@ -93,7 +93,7 @@ if (isset($_GET['mensaje'])) {
     $error_ocurrido = $_GET['error'] == '1';
 }
 
-// --- 2. LISTAR USUARIOS ---
+// Listado
 $usuarios = [];
 $sql_list = "SELECT u.id_usuario, u.nombre, u.email, p.nombre_perfil
              FROM CA_EA_ST_IY_USUARIOS u
@@ -120,14 +120,14 @@ oci_free_statement($stmt_list);
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
         <div class="container">
-            <a class="navbar-brand" href="dashboard.php">Sistema Viña</a>
+            <a class="navbar-brand" href="dashboard.php">Sistema Vina</a>
             <span class="navbar-text text-white">Mantenedor de Usuarios</span>
         </div>
     </nav>
 
     <div class="container mt-4">
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h2>🔐 Mantenedor de Usuarios</h2>
+            <h2>Mantenedor de Usuarios</h2>
             <a href="dashboard.php" class="btn btn-secondary">Volver al Panel</a>
         </div>
 

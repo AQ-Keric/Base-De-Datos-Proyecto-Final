@@ -2,8 +2,8 @@
 session_start();
 
 if (!isset($_SESSION['id_usuario'])) {
-    // header("Location: index.php"); 
-    // exit;
+    header("Location: index.php"); 
+    exit;
 }
 require 'db.php';
 
@@ -13,10 +13,8 @@ $cuarteles = [];
 $personal = [];
 $contenedores = [];
 
-// --- 1. LÓGICA DE RECEPCIÓN ---
+// Registrar recepcion
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    
-
     $id_cuartel = filter_input(INPUT_POST, 'id_cuartel', FILTER_VALIDATE_INT);
     $id_personal = filter_input(INPUT_POST, 'id_personal', FILTER_VALIDATE_INT); 
     $kilos = filter_input(INPUT_POST, 'kilos', FILTER_VALIDATE_FLOAT);
@@ -24,9 +22,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($id_cuartel === false || $id_personal === false || $kilos === false || $kilos <= 0 || $id_contenedor === false) {
         $error_ocurrido = true;
-        $mensaje = "Error: Datos incompletos. Asegúrese de seleccionar Cuartel, Personal, Kilos (> 0) y Contenedor.";
+        $mensaje = "Error: Datos incompletos. Asegurese de seleccionar Cuartel, Personal, Kilos (> 0) y Contenedor.";
     } else {
-
         $sql = 'BEGIN CA_EA_ST_IY_PKG_VINA.CA_EA_ST_IY_SP_GESTION_RECEPCION(:p_id_cuartel, :p_id_personal, :p_kilos, :p_id_contenedor); END;';
         $stmt = oci_parse($conn, $sql);
         
@@ -37,28 +34,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         
         if (@oci_execute($stmt)) {
             $litros_estimados = $kilos * 0.70; 
-            $mensaje = "Recepción registrada. Lote creado (aprox. " . number_format($litros_estimados, 2, ',', '.') . " Litros).";
+            $mensaje = "Recepcion registrada. Lote creado (aprox. " . number_format($litros_estimados, 2, ',', '.') . " Litros).";
         } else {
             $e = oci_error($stmt);
             $error_ocurrido = true;
-            $mensaje = "Error al Registrar: " . $e['message'];
+            $mensaje = "Error al registrar: " . $e['message'];
         }
         oci_free_statement($stmt);
     }
-    
 
     header('Location: gestor_recepcion.php?mensaje=' . urlencode($mensaje) . '&error=' . ($error_ocurrido ? '1' : '0'));
     exit;
 }
-
-// --- 2. LÓGICA DE CARGA DE DATOS  ---
 
 if (isset($_GET['mensaje'])) {
     $mensaje = $_GET['mensaje'];
     $error_ocurrido = $_GET['error'] == '1';
 }
 
-// 2.1 Cargar Cuarteles
+// Cargar datos
 $sql_cuarteles = "SELECT id_cuartel, nombre_cuartel, nombre_variedad FROM CA_EA_ST_IY_CUARTEL c JOIN CA_EA_ST_IY_VARIEDAD_UVA v ON c.id_variedad = v.id_variedad ORDER BY nombre_cuartel";
 $stmt_cuarteles = oci_parse($conn, $sql_cuarteles);
 @oci_execute($stmt_cuarteles);
@@ -67,7 +61,6 @@ while ($row = oci_fetch_assoc($stmt_cuarteles)) {
 }
 oci_free_statement($stmt_cuarteles);
 
-// 2.2 Cargar Personal 
 $sql_personal = "SELECT id_personal, nombre, apellido1, nombre_cargo FROM CA_EA_ST_IY_PERSONAL p JOIN CA_EA_ST_IY_CARGO c ON p.id_cargo = c.id_cargo ORDER BY nombre";
 $stmt_personal = oci_parse($conn, $sql_personal);
 @oci_execute($stmt_personal);
@@ -76,8 +69,6 @@ while ($row = oci_fetch_assoc($stmt_personal)) {
 }
 oci_free_statement($stmt_personal);
 
-
-// 2.3 Cargar Contenedores LIBRES
 $cursor_cont = oci_new_cursor($conn);
 $sql_cont = 'BEGIN CA_EA_ST_IY_PKG_VINA.CA_EA_ST_IY_SP_REPORTE_OCUPACION_BODEGA(:cursor); END;'; 
 $stmt_cont = oci_parse($conn, $sql_cont);
@@ -165,7 +156,7 @@ oci_free_statement($cursor_cont);
                             <select id="id_contenedor" name="id_contenedor" class="form-select" required>
                                 <option value="">Seleccione Contenedor Libre</option>
                                 <?php if (empty($contenedores)): ?>
-                                    <option disabled>--- No hay contenedores libres ---</option>
+                                    <option disabled>No hay contenedores libres</option>
                                 <?php else: ?>
                                     <?php foreach ($contenedores as $cont): ?>
                                         <option value="<?php echo $cont['ID_CONTENEDOR']; ?>">

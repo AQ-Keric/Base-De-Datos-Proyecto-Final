@@ -9,11 +9,11 @@ require 'db.php';
 $mensaje = "";
 $error_ocurrido = false;
 
-// --- 1. LÓGICA DE CREATE Y DELETE ---
+// Guardar cambios
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $accion = $_POST['accion'] ?? '';
 
-    // CREAR PROVEEDOR
+    // Crear
     if ($accion === 'crear') {
         $rut = trim($_POST['rut_proveedor'] ?? '');
         $razon = trim($_POST['razon_social'] ?? '');
@@ -40,7 +40,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
-    // ELIMINAR PROVEEDOR
+    // Eliminar
     if ($accion === 'eliminar') {
         $id_prov = filter_input(INPUT_POST, 'id_proveedor_eliminar', FILTER_VALIDATE_INT);
         $sql = 'DELETE FROM CA_EA_ST_IY_PROVEEDOR WHERE id_proveedor = :p_id';
@@ -72,7 +72,7 @@ if (isset($_GET['mensaje'])) {
     $error_ocurrido = $_GET['error'] == '1';
 }
 
-// --- 2. LISTAR PROVEEDORES ---
+// Listado
 $proveedores = [];
 $sql_list = "SELECT id_proveedor, rut_proveedor, razon_social FROM CA_EA_ST_IY_PROVEEDOR ORDER BY id_proveedor DESC";
 $stmt_list = oci_parse($conn, $sql_list);
@@ -96,14 +96,14 @@ oci_free_statement($stmt_list);
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
         <div class="container">
-            <a class="navbar-brand" href="dashboard.php">Sistema Viña</a>
+            <a class="navbar-brand" href="dashboard.php">Sistema Vina</a>
             <span class="navbar-text text-white">Mantenedor de Proveedores</span>
         </div>
     </nav>
 
     <div class="container mt-4">
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h2>🏭 Mantenedor de Proveedores</h2>
+            <h2>Mantenedor de Proveedores</h2>
             <a href="dashboard.php" class="btn btn-secondary">Volver al Panel</a>
         </div>
 

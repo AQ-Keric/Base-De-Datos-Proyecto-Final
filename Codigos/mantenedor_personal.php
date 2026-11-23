@@ -1,11 +1,15 @@
 <?php
 session_start();
+if (!isset($_SESSION['id_usuario'])) {
+    header("Location: index.php");
+    exit;
+}
 require 'db.php';
 
 $mensaje = "";
 $error_ocurrido = false;
 
-// --- 0. PREPARAR DATOS AUXILIARES: CARGOS  ---
+// Cargos
 $cargos = [];
 $sql_cargos = "SELECT ID_CARGO, NOMBRE_CARGO FROM CA_EA_ST_IY_CARGO ORDER BY ID_CARGO";
 $stmt_cargos = oci_parse($conn, $sql_cargos);
@@ -17,12 +21,11 @@ if (@oci_execute($stmt_cargos)) {
     @oci_free_statement($stmt_cargos);
 } 
 
-// --- 1. LOGICA DE CREAR y ELIMINAR 
+// Guardar cambios
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    
     $accion = $_POST['accion'] ?? '';
     
-    // ------------------- CREAR PERSONAL (M6) -------------------
+    // Crear
     if ($accion === 'crear') {
         $rut = $_POST['rut'];
         $nombre = $_POST['nombre'];
@@ -48,7 +51,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         oci_free_statement($stmt);
     }
     
-    // ------------------- ELIMINAR PERSONAL (M7) -------------------
+    // Eliminar
     if ($accion === 'eliminar') {
         $id_personal = filter_input(INPUT_POST, 'id_personal_eliminar', FILTER_VALIDATE_INT);
         
@@ -58,11 +61,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         
         if (@oci_execute($stmt)) {
             oci_commit($conn);
-            $mensaje = "🗑️ Personal ID $id_personal eliminado correctamente.";
+            $mensaje = "Personal ID $id_personal eliminado correctamente.";
         } else {
             $e = oci_error($stmt);
             if ($e['code'] == 2292) {
-                 $mensaje = "Error: El personal ID $id_personal no puede ser eliminado porque tiene registros históricos (ej. vendimia) asociados.";
+                 $mensaje = "Error: El personal ID $id_personal no puede ser eliminado porque tiene registros historicos asociados.";
             } else {
                  $mensaje = "Error al eliminar personal: " . $e['message'];
             }
@@ -72,7 +75,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 
-// --- 2. LOGICA DE LISTAR (READ) ---
+// Listado
 
 $sql_list = "SELECT 
                 P.ID_PERSONAL, 

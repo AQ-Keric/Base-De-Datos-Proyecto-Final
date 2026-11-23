@@ -2,8 +2,8 @@
 session_start();
 
 if (!isset($_SESSION['id_usuario'])) {
-    // header("Location: index.php"); 
-    // exit;
+    header("Location: index.php"); 
+    exit;
 }
 require 'db.php'; 
 
@@ -13,9 +13,8 @@ $lotes = [];
 $insumos = [];
 $personal = [];
 
-// --- 1. LÓGICA DE APLICACIÓN DE INSUMO ---
+// Registrar aplicacion de insumo
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    
     $id_lote = filter_input(INPUT_POST, 'id_lote', FILTER_VALIDATE_INT);
     $id_insumo = filter_input(INPUT_POST, 'id_insumo', FILTER_VALIDATE_INT);
     $id_personal = filter_input(INPUT_POST, 'id_personal', FILTER_VALIDATE_INT);
@@ -24,9 +23,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($id_lote === false || $id_insumo === false || $id_personal === false || $cantidad === false || $cantidad <= 0 || empty($motivo)) {
         $error_ocurrido = true;
-        $mensaje = "Error: Todos los campos son obligatorios y la cantidad debe ser un valor positivo.";
+        $mensaje = "Error: Todos los campos son obligatorios y la cantidad debe ser mayor a 0.";
     } else {
-
         $sql = 'BEGIN CA_EA_ST_IY_PKG_VINA.CA_EA_ST_IY_SP_GESTION_APLICAR_INSUMO(:p_lote, :p_insumo, :p_personal, :p_cantidad, :p_motivo); END;';
         $stmt = oci_parse($conn, $sql);
         
@@ -37,13 +35,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         oci_bind_by_name($stmt, ':p_motivo', $motivo);
         
         if (@oci_execute($stmt)) {
-            $mensaje = "Aplicación de insumo registrada con éxito. Stock actualizado.";
+            $mensaje = "Aplicacion de insumo registrada con exito. Stock actualizado.";
         } else {
             $e = oci_error($stmt);
             $error_ocurrido = true;
             $mensaje = "Error al aplicar insumo: " . $e['message'];
 
-            // Si falla por restricción, puede ser por stock insuficiente 
             if (strpos($e['message'], 'check constraint') !== false) {
                  $mensaje = "Error: La cantidad utilizada excede el stock actual del insumo.";
             }
@@ -51,19 +48,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         oci_free_statement($stmt);
     }
     
-    // Patrón Post/Redirect/Get
     header('Location: gestor_aplicacion_insumo.php?mensaje=' . urlencode($mensaje) . '&error=' . ($error_ocurrido ? '1' : '0'));
     exit;
 }
-
-// --- 2. LÓGICA DE CARGA DE DATOS  ---
 
 if (isset($_GET['mensaje'])) {
     $mensaje = $_GET['mensaje'];
     $error_ocurrido = $_GET['error'] == '1';
 }
 
-// 2.1 Cargar Lotes activos 
+// Cargar datos
 $sql_lotes = "SELECT l.id_lote, l.litros_actuales, l.estado, v.nombre_variedad, 
                      cont.material || ' (' || cont.capacidad || 'L)' AS contenedor_info
               FROM CA_EA_ST_IY_LOTE l
@@ -80,7 +74,6 @@ while ($row = oci_fetch_assoc($stmt_lotes)) {
 }
 oci_free_statement($stmt_lotes);
 
-// 2.2 Cargar Insumos 
 $sql_insumos = "SELECT id_insumo, nombre_insumo, stock_actual, unidad_medida 
                 FROM CA_EA_ST_IY_INSUMOS 
                 ORDER BY nombre_insumo";
@@ -91,7 +84,6 @@ while ($row = oci_fetch_assoc($stmt_insumos)) {
 }
 oci_free_statement($stmt_insumos);
 
-
 $sql_personal = "SELECT id_personal, nombre, apellido1, nombre_cargo FROM CA_EA_ST_IY_PERSONAL p JOIN CA_EA_ST_IY_CARGO c ON p.id_cargo = c.id_cargo ORDER BY nombre";
 $stmt_personal = oci_parse($conn, $sql_personal);
 @oci_execute($stmt_personal);
@@ -99,8 +91,6 @@ while ($row = oci_fetch_assoc($stmt_personal)) {
     $personal[] = $row;
 }
 oci_free_statement($stmt_personal);
-
-
 ?>
 <!DOCTYPE html>
 <html lang="es">

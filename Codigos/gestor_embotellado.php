@@ -2,8 +2,8 @@
 session_start();
 
 if (!isset($_SESSION['id_usuario'])) {
-    // header("Location: index.php"); 
-    // exit;
+    header("Location: index.php"); 
+    exit;
 }
 require 'db.php'; 
 
@@ -12,9 +12,8 @@ $error_ocurrido = false;
 $lotes_aptos = []; 
 $productos = [];
 
-// --- 1. LÓGICA DE EMBOTELLADO ---
+// Registrar embotellado
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    
     $id_lote = filter_input(INPUT_POST, 'id_lote', FILTER_VALIDATE_INT);
     $id_producto = filter_input(INPUT_POST, 'id_producto', FILTER_VALIDATE_INT);
     $cantidad_botellas = filter_input(INPUT_POST, 'cantidad_botellas', FILTER_VALIDATE_INT);
@@ -25,8 +24,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $error_ocurrido = true;
         $mensaje = "Error: Lote, Producto y Cantidad de Botellas (> 0) son obligatorios.";
     } else {
-
-
         $sql = 'BEGIN CA_EA_ST_IY_PKG_VINA.CA_EA_ST_IY_SP_GESTION_EMBOTELLADO(:p_lote, :p_producto, :p_cant); END;';
         $stmt = oci_parse($conn, $sql);
         
@@ -35,14 +32,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         oci_bind_by_name($stmt, ':p_cant', $cantidad_botellas);
         
         if (@oci_execute($stmt)) {
-            $mensaje = "Embotellado registrado con éxito. Se produjeron " . number_format($cantidad_botellas, 0, '', '.') . " unidades del producto. Se descontaron " . number_format($litros_a_usar, 2, ',', '.') . " litros del Lote #$id_lote.";
+            $mensaje = "Embotellado registrado con exito. Se produjeron " . number_format($cantidad_botellas, 0, '', '.') . " unidades del producto. Se descontaron " . number_format($litros_a_usar, 2, ',', '.') . " litros del Lote #$id_lote.";
         } else {
             $e = oci_error($stmt);
             $error_ocurrido = true;
-            $mensaje = "Error al Embotellar: " . $e['message'];
+            $mensaje = "Error al embotellar: " . $e['message'];
 
             if (strpos($e['message'], 'constraint') !== false) {
-                 $mensaje = "Error: El lote no tiene suficientes litros para producir esa cantidad de botellas (revisar litros_actuales).";
+                 $mensaje = "Error: El lote no tiene suficientes litros para producir esa cantidad de botellas.";
             }
         }
         oci_free_statement($stmt);
@@ -52,14 +49,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     exit;
 }
 
-// --- 2. LÓGICA DE CARGA DE DATOS (Selects) ---
-
 if (isset($_GET['mensaje'])) {
     $mensaje = $_GET['mensaje'];
     $error_ocurrido = $_GET['error'] == '1';
 }
 
-// 2.1 Cargar Lotes aptos para embotellado (estado 'Crianza' o 'Finalizado')
+// Cargar lotes y productos
 $sql_lotes_aptos = "SELECT l.id_lote, l.litros_actuales, v.nombre_variedad, l.estado
               FROM CA_EA_ST_IY_LOTE l
               JOIN CA_EA_ST_IY_RECEPCION_COSECHA rc ON l.id_cosecha = rc.id_cosecha

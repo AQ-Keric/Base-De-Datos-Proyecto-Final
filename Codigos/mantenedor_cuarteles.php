@@ -9,7 +9,7 @@ require 'db.php';
 $mensaje = "";
 $error_ocurrido = false;
 
-// --- 0. CARGAR VARIEDADES ---
+// Variedades
 $variedades = [];
 $sql_var = "SELECT id_variedad, nombre_variedad FROM CA_EA_ST_IY_VARIEDAD_UVA ORDER BY nombre_variedad";
 $stmt_var = oci_parse($conn, $sql_var);
@@ -20,11 +20,11 @@ if (@oci_execute($stmt_var)) {
 }
 oci_free_statement($stmt_var);
 
-// --- 1. LÓGICA DE CREATE Y DELETE ---
+// Guardar cambios
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $accion = $_POST['accion'] ?? '';
 
-    // CREAR CUARTEL
+    // Crear
     if ($accion === 'crear') {
         $nombre = trim($_POST['nombre_cuartel'] ?? '');
         $id_variedad = filter_input(INPUT_POST, 'id_variedad', FILTER_VALIDATE_INT);
@@ -42,7 +42,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             if (@oci_execute($stmt)) {
                 oci_commit($conn);
-                $mensaje = "Cuartel '$nombre' registrado con éxito.";
+                $mensaje = "Cuartel '$nombre' registrado con exito.";
             } else {
                 $e = oci_error($stmt);
                 $error_ocurrido = true;
@@ -53,7 +53,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
-    // ELIMINAR CUARTEL
+    // Eliminar
     if ($accion === 'eliminar') {
         $id_cuartel = filter_input(INPUT_POST, 'id_cuartel_eliminar', FILTER_VALIDATE_INT);
         $sql = 'DELETE FROM CA_EA_ST_IY_CUARTEL WHERE id_cuartel = :p_id';
@@ -85,7 +85,7 @@ if (isset($_GET['mensaje'])) {
     $error_ocurrido = $_GET['error'] == '1';
 }
 
-// --- 2. LISTAR CUARTELES ---
+// Listado
 $cuarteles = [];
 $sql_list = "SELECT c.id_cuartel, c.nombre_cuartel, c.hectareas, v.nombre_variedad
              FROM CA_EA_ST_IY_CUARTEL c
@@ -112,14 +112,14 @@ oci_free_statement($stmt_list);
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
         <div class="container">
-            <a class="navbar-brand" href="dashboard.php">Sistema Viña</a>
+            <a class="navbar-brand" href="dashboard.php">Sistema Vina</a>
             <span class="navbar-text text-white">Mantenedor de Cuarteles</span>
         </div>
     </nav>
 
     <div class="container mt-4">
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h2>🌱 Mantenedor de Cuarteles</h2>
+            <h2>Mantenedor de Cuarteles</h2>
             <a href="dashboard.php" class="btn btn-secondary">Volver al Panel</a>
         </div>
 

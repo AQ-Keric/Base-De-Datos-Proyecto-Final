@@ -8,22 +8,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $_POST['email'];
     $pass = $_POST['password'];
 
-    // Llamada al Procedimiento Almacenado de Login
     $sql = 'BEGIN CA_EA_ST_IY_PKG_VINA.CA_EA_ST_IY_SP_LOGIN(:p_email, :p_pass, :p_cursor); END;';
     $stmt = oci_parse($conn, $sql);
-    
-    // Crear el cursor para recibir la respuesta
     $cursor = oci_new_cursor($conn);
 
-    // Bind de parámetros (Seguridad contra inyección SQL)
     oci_bind_by_name($stmt, ':p_email', $email);
     oci_bind_by_name($stmt, ':p_pass', $pass);
     oci_bind_by_name($stmt, ':p_cursor', $cursor, -1, OCI_B_CURSOR);
 
     oci_execute($stmt);
-    oci_execute($cursor); // Ejecutar el cursor retornado
+    oci_execute($cursor);
 
-    // Verificar si el cursor trajo datos
     if ($row = oci_fetch_assoc($cursor)) {
         $_SESSION['id_usuario'] = $row['ID_USUARIO'];
         $_SESSION['nombre'] = $row['NOMBRE'];

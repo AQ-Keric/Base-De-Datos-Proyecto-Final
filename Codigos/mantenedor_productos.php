@@ -1,20 +1,19 @@
 <?php
 session_start();
 if (!isset($_SESSION['id_usuario'])) {
-    // header("Location: index.php"); 
-    // exit;
+    header("Location: index.php"); 
+    exit;
 }
 require 'db.php'; 
 
 $mensaje = "";
 $error_ocurrido = false;
 
-// --- LÓGICA DE CREATE, UPDATE, DELETE
+// Guardar cambios
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    
     $accion = $_POST['accion'] ?? '';
 
-    // ------------------- CREAR PRODUCTO -------------------
+    // Crear
     if ($accion === 'crear') {
         $nombre_prod = $_POST['nombre_prod'] ?? '';
         $precio = filter_input(INPUT_POST, 'precio', FILTER_VALIDATE_FLOAT); 
@@ -23,7 +22,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $error_ocurrido = true;
             $mensaje = "Error: Nombre y Precio (debe ser > 0) son obligatorios.";
         } else {
-
             $sql = 'BEGIN CA_EA_ST_IY_PKG_VINA.CA_EA_ST_IY_SP_CRUD_CREAR_PRODUCTO(:p_nombre, :p_precio); END;';
             $stmt = oci_parse($conn, $sql);
             
@@ -31,23 +29,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             oci_bind_by_name($stmt, ':p_precio', $precio);
             
             if (@oci_execute($stmt)) {
-                $mensaje = "Producto Creado con Éxito.";
+                $mensaje = "Producto creado con exito.";
             } else {
                 $e = oci_error($stmt);
                 $error_ocurrido = true;
-                $mensaje = "Error al Crear: " . $e['message'];
+                $mensaje = "Error al crear: " . $e['message'];
             }
             oci_free_statement($stmt);
         }
     }
 
-    // ------------------- ELIMINAR PRODUCTO  -------------------
+    // Eliminar
     if ($accion === 'eliminar') {
         $id_producto = filter_input(INPUT_POST, 'id_producto_eliminar', FILTER_VALIDATE_INT);
 
         if ($id_producto === false) {
             $error_ocurrido = true;
-            $mensaje = "Error: ID de Producto a eliminar inválido.";
+            $mensaje = "Error: ID de producto invalido.";
         } else {
             $sql = 'DELETE FROM CA_EA_ST_IY_PRODUCTOS WHERE id_producto = :p_id';
             $stmt = oci_parse($conn, $sql);
@@ -55,14 +53,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             if (@oci_execute($stmt)) {
                 oci_commit($conn);
-                $mensaje = "🗑️ Producto Eliminado con Éxito.";
+                $mensaje = "Producto eliminado con exito.";
             } else {
                 $e = oci_error($stmt);
                 $error_ocurrido = true;
                 if (strpos($e['message'], 'integrity constraint') !== false) {
-                    $mensaje = "Error: No se puede eliminar el producto porque está asociado a un pedido o embotellado.";
+                    $mensaje = "Error: No se puede eliminar el producto porque esta asociado a un pedido o embotellado.";
                 } else {
-                    $mensaje = "Error al Eliminar: " . $e['message'];
+                    $mensaje = "Error al eliminar: " . $e['message'];
                 }
                 oci_rollback($conn);
             }
@@ -76,7 +74,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 
-// --- LÓGICA DE LISTAR (READ)
+// Listado
 if (isset($_GET['mensaje'])) {
     $mensaje = $_GET['mensaje'];
     $error_ocurrido = $_GET['error'] == '1';

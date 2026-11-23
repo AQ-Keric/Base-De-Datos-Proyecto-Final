@@ -13,7 +13,7 @@ $clientes = [];
 $productos = [];
 $pedidos = [];
 
-// --- 1. LÓGICA PARA CREAR PEDIDO (POST) ---
+// Crear pedido
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $rut_cliente = trim($_POST['rut_cliente'] ?? '');
     $id_producto = filter_input(INPUT_POST, 'id_producto', FILTER_VALIDATE_INT);
@@ -21,9 +21,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if (empty($rut_cliente) || $id_producto === false || $cantidad === false || $cantidad <= 0) {
         $error_ocurrido = true;
-        $mensaje = "Error: Debe seleccionar un cliente, un producto y una cantidad válida mayor a 0.";
+        $mensaje = "Error: Debe seleccionar un cliente, un producto y una cantidad valida mayor a 0.";
     } else {
-        // Llamada al Stored Procedure en Oracle PL/SQL
         $sql = 'BEGIN CA_EA_ST_IY_PKG_VINA.CA_EA_ST_IY_SP_GESTION_CREAR_PEDIDO(:p_rut, :p_producto, :p_cant); END;';
         $stmt = oci_parse($conn, $sql);
 
@@ -45,15 +44,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     exit;
 }
 
-// Mensajes devueltos por redirección
 if (isset($_GET['mensaje'])) {
     $mensaje = $_GET['mensaje'];
     $error_ocurrido = $_GET['error'] == '1';
 }
 
-// --- 2. CARGA DE DATOS PARA FORMULARIO Y TABLA ---
-
-// 2.1 Clientes
+// Cargar datos
 $sql_clientes = "SELECT rut_cliente, razon_social FROM CA_EA_ST_IY_CLIENTE ORDER BY razon_social";
 $stmt_cli = oci_parse($conn, $sql_clientes);
 if (@oci_execute($stmt_cli)) {
@@ -63,7 +59,6 @@ if (@oci_execute($stmt_cli)) {
 }
 oci_free_statement($stmt_cli);
 
-// 2.2 Productos
 $sql_prod = "SELECT id_producto, nombre_prod, stock, precio FROM CA_EA_ST_IY_PRODUCTOS ORDER BY nombre_prod";
 $stmt_prod = oci_parse($conn, $sql_prod);
 if (@oci_execute($stmt_prod)) {
@@ -73,7 +68,6 @@ if (@oci_execute($stmt_prod)) {
 }
 oci_free_statement($stmt_prod);
 
-// 2.3 Listado de Pedidos Recientes
 $sql_pedidos = "SELECT p.id_pedido, c.rut_cliente, c.razon_social, p.fecha_pedido, p.estado_pedido,
                        pr.nombre_prod, dp.cantidad, pr.precio, (dp.cantidad * pr.precio) AS total
                 FROM CA_EA_ST_IY_PEDIDO_VENTA p
@@ -102,16 +96,16 @@ oci_free_statement($stmt_ped);
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
         <div class="container">
-            <a class="navbar-brand" href="dashboard.php">Sistema Viña</a>
+            <a class="navbar-brand" href="dashboard.php">Sistema Vina</a>
             <span class="navbar-text text-white">
-                Gestión de Procesos: Pedidos de Venta
+                Gestion de Pedidos
             </span>
         </div>
     </nav>
 
     <div class="container mt-4">
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h2>🛒 Gestor de Pedidos de Venta (G5)</h2>
+            <h2>Gestion de Pedidos de Venta</h2>
             <a href="dashboard.php" class="btn btn-secondary">Volver al Panel</a>
         </div>
 
@@ -123,7 +117,6 @@ oci_free_statement($stmt_ped);
         <?php endif; ?>
 
         <div class="row">
-            <!-- Formulario de Creación -->
             <div class="col-md-4">
                 <div class="card mb-4">
                     <div class="card-header bg-success text-white">
@@ -166,7 +159,6 @@ oci_free_statement($stmt_ped);
                 </div>
             </div>
 
-            <!-- Tabla de Pedidos Registrados -->
             <div class="col-md-8">
                 <div class="card">
                     <div class="card-header bg-dark text-white">

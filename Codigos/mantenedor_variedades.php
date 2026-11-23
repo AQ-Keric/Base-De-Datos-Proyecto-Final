@@ -9,11 +9,11 @@ require 'db.php';
 $mensaje = "";
 $error_ocurrido = false;
 
-// --- 1. LÓGICA DE CREATE Y DELETE ---
+// Guardar cambios
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $accion = $_POST['accion'] ?? '';
 
-    // CREAR VARIEDAD
+    // Crear
     if ($accion === 'crear') {
         $nombre = trim($_POST['nombre_variedad'] ?? '');
 
@@ -27,7 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             if (@oci_execute($stmt)) {
                 oci_commit($conn);
-                $mensaje = "Variedad de uva '$nombre' registrada con éxito.";
+                $mensaje = "Variedad de uva '$nombre' registrada con exito.";
             } else {
                 $e = oci_error($stmt);
                 $error_ocurrido = true;
@@ -38,7 +38,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
-    // ELIMINAR VARIEDAD
+    // Eliminar
     if ($accion === 'eliminar') {
         $id_var = filter_input(INPUT_POST, 'id_variedad_eliminar', FILTER_VALIDATE_INT);
         $sql = 'DELETE FROM CA_EA_ST_IY_VARIEDAD_UVA WHERE id_variedad = :p_id';
@@ -52,7 +52,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $e = oci_error($stmt);
             $error_ocurrido = true;
             if (strpos($e['message'], 'integrity constraint') !== false) {
-                $mensaje = "Error: No se puede eliminar la variedad porque está asociada a cuarteles.";
+                $mensaje = "Error: No se puede eliminar la variedad porque esta asociada a cuarteles.";
             } else {
                 $mensaje = "Error al eliminar: " . $e['message'];
             }
@@ -70,7 +70,7 @@ if (isset($_GET['mensaje'])) {
     $error_ocurrido = $_GET['error'] == '1';
 }
 
-// --- 2. LISTAR VARIEDADES ---
+// Listado
 $variedades = [];
 $sql_list = "SELECT id_variedad, nombre_variedad FROM CA_EA_ST_IY_VARIEDAD_UVA ORDER BY id_variedad";
 $stmt_list = oci_parse($conn, $sql_list);
@@ -94,14 +94,14 @@ oci_free_statement($stmt_list);
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
         <div class="container">
-            <a class="navbar-brand" href="dashboard.php">Sistema Viña</a>
+            <a class="navbar-brand" href="dashboard.php">Sistema Vina</a>
             <span class="navbar-text text-white">Mantenedor de Variedades de Uva</span>
         </div>
     </nav>
 
     <div class="container mt-4">
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h2>🍇 Mantenedor de Variedades de Uva</h2>
+            <h2>Mantenedor de Variedades de Uva</h2>
             <a href="dashboard.php" class="btn btn-secondary">Volver al Panel</a>
         </div>
 

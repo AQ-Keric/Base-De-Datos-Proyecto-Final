@@ -9,11 +9,11 @@ require 'db.php';
 $mensaje = "";
 $error_ocurrido = false;
 
-// --- 1. LÓGICA DE CREATE, UPDATE, DELETE ---
+// Guardar cambios
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $accion = $_POST['accion'] ?? '';
 
-    // CREAR CLIENTE
+    // Crear
     if ($accion === 'crear') {
         $rut = trim($_POST['rut_cliente'] ?? '');
         $razon = trim($_POST['razon_social'] ?? '');
@@ -41,7 +41,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
-    // ACTUALIZAR DIRECCIÓN
+    // Actualizar
     if ($accion === 'actualizar') {
         $id_cliente = filter_input(INPUT_POST, 'id_cliente', FILTER_VALIDATE_INT);
         $direccion = trim($_POST['direccion'] ?? '');
@@ -66,7 +66,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
-    // ELIMINAR CLIENTE
+    // Eliminar
     if ($accion === 'eliminar') {
         $id_cliente = filter_input(INPUT_POST, 'id_cliente_eliminar', FILTER_VALIDATE_INT);
         $sql = 'DELETE FROM CA_EA_ST_IY_CLIENTE WHERE id_cliente = :p_id';
@@ -98,7 +98,7 @@ if (isset($_GET['mensaje'])) {
     $error_ocurrido = $_GET['error'] == '1';
 }
 
-// --- 2. LISTAR CLIENTES ---
+// Listado
 $clientes = [];
 $sql_list = "SELECT id_cliente, rut_cliente, razon_social, direccion, pais FROM CA_EA_ST_IY_CLIENTE ORDER BY id_cliente DESC";
 $stmt_list = oci_parse($conn, $sql_list);
@@ -122,14 +122,14 @@ oci_free_statement($stmt_list);
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
         <div class="container">
-            <a class="navbar-brand" href="dashboard.php">Sistema Viña</a>
+            <a class="navbar-brand" href="dashboard.php">Sistema Vina</a>
             <span class="navbar-text text-white">Mantenedor de Clientes</span>
         </div>
     </nav>
 
     <div class="container mt-4">
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h2>👥 Mantenedor de Clientes</h2>
+            <h2>Mantenedor de Clientes</h2>
             <a href="dashboard.php" class="btn btn-secondary">Volver al Panel</a>
         </div>
 

@@ -1,16 +1,19 @@
 <?php
 session_start();
+if (!isset($_SESSION['id_usuario'])) {
+    header("Location: index.php");
+    exit;
+}
 require 'db.php';
 
 $mensaje = "";
 $error_ocurrido = false;
 
-// --- LÓGICA DE CREATE, UPDATE, DELETE
+// Guardar cambios
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    
     $accion = $_POST['accion'] ?? ''; 
 
-    // ------------------- CREAR CONTENEDOR -------------------
+    // Crear
     if ($accion === 'crear') {
         $material = $_POST['material'] ?? '';
         $capacidad = filter_input(INPUT_POST, 'capacidad', FILTER_VALIDATE_FLOAT); 
@@ -26,17 +29,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             oci_bind_by_name($stmt, ':p_cap', $capacidad);
             
             if (@oci_execute($stmt)) {
-                $mensaje = "Contenedor Creado con Éxito.";
+                $mensaje = "Contenedor creado con exito.";
             } else {
                 $e = oci_error($stmt);
                 $error_ocurrido = true;
-                $mensaje = "Error al Crear: " . $e['message'];
+                $mensaje = "Error al crear: " . $e['message'];
             }
             oci_free_statement($stmt);
         }
     }
 
-    // ------------------- ACTUALIZAR CONTENEDOR (UPDATE) -------------------
+    // Actualizar
     if ($accion === 'editar') {
         $id_contenedor = filter_input(INPUT_POST, 'id_contenedor', FILTER_VALIDATE_INT);
         $material = $_POST['material'] ?? '';
@@ -45,7 +48,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         if ($id_contenedor === false || empty($material) || $capacidad === false || $capacidad <= 0 || $nro_usos === false || $nro_usos < 0) {
             $error_ocurrido = true;
-            $mensaje = "Error: Datos de actualización inválidos o incompletos.";
+            $mensaje = "Error: Datos de actualizacion invalidos o incompletos.";
         } else {
             $sql = 'BEGIN CA_EA_ST_IY_PKG_VINA.CA_EA_ST_IY_SP_CRUD_ACTUALIZAR_CONTENEDOR(:p_id, :p_mat, :p_cap, :p_usos); END;';
             $stmt = oci_parse($conn, $sql);
@@ -56,43 +59,42 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             oci_bind_by_name($stmt, ':p_usos', $nro_usos);
 
             if (@oci_execute($stmt)) {
-                $mensaje = "Contenedor Actualizado con Éxito.";
+                $mensaje = "Contenedor actualizado con exito.";
             } else {
                 $e = oci_error($stmt);
                 $error_ocurrido = true;
-                $mensaje = "Error al Actualizar: " . $e['message'];
+                $mensaje = "Error al actualizar: " . $e['message'];
             }
             oci_free_statement($stmt);
         }
     }
 
-    // ------------------- ELIMINAR CONTENEDOR (DELETE) -------------------
+    // Eliminar
     if ($accion === 'eliminar') {
         $id_contenedor = filter_input(INPUT_POST, 'id_contenedor_eliminar', FILTER_VALIDATE_INT);
 
         if ($id_contenedor === false) {
             $error_ocurrido = true;
-            $mensaje = "Error: ID de Contenedor a eliminar inválido.";
+            $mensaje = "Error: ID de contenedor invalido.";
         } else {
             $sql = 'BEGIN CA_EA_ST_IY_PKG_VINA.CA_EA_ST_IY_SP_CRUD_ELIMINAR_CONTENEDOR(:p_id); END;';
             $stmt = oci_parse($conn, $sql);
             oci_bind_by_name($stmt, ':p_id', $id_contenedor);
 
             if (@oci_execute($stmt)) {
-                $mensaje = "Contenedor Eliminado con Éxito.";
+                $mensaje = "Contenedor eliminado con exito.";
             } else {
                 $e = oci_error($stmt);
                 $error_ocurrido = true;
                 if (strpos($e['message'], 'integrity constraint') !== false) {
-                    $mensaje = "Error: No se puede eliminar el contenedor porque está siendo usado (integridad referencial).";
+                    $mensaje = "Error: No se puede eliminar el contenedor porque esta siendo usado.";
                 } else {
-                    $mensaje = "Error al Eliminar: " . $e['message'];
+                    $mensaje = "Error al eliminar: " . $e['message'];
                 }
             }
             oci_free_statement($stmt);
         }
     }
-    
 
     if ($accion) {
         header('Location: mantenedor_contenedores.php?mensaje=' . urlencode($mensaje) . '&error=' . ($error_ocurrido ? '1' : '0'));
@@ -100,7 +102,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 
-// --- LÓGICA DE LISTAR (READ) 
+// Listar contenedores
 if (isset($_GET['mensaje'])) {
     $mensaje = $_GET['mensaje'];
     $error_ocurrido = $_GET['error'] == '1';

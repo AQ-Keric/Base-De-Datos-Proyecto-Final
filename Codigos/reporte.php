@@ -1,10 +1,12 @@
 <?php
 session_start();
 if (!isset($_SESSION['id_usuario'])) {
+    header("Location: index.php");
+    exit;
 }
 require 'db.php'; 
 
-// --- 1. FUNCIÓN AUXILIAR para ejecutar SP que retornan CURSORES ---
+// Ejecutar procedimiento que retorna cursor
 function ejecutar_reporte_cursor($conn, $sp_name) {
     $data = [];
     $cursor = oci_new_cursor($conn);
@@ -17,23 +19,17 @@ function ejecutar_reporte_cursor($conn, $sp_name) {
         while ($row = oci_fetch_assoc($cursor)) {
             $data[] = $row;
         }
-    } else {
-        // Manejo básico de error
     }
     oci_free_statement($stmt);
     oci_free_statement($cursor);
     return $data;
 }
 
-// --- 2. CONSULTAS A LOS REPORTES ---
-
-// A. Trazabilidad Completa (Llamando al SP con cursor)
+// Cargar reportes
 $trazabilidad = ejecutar_reporte_cursor($conn, 'CA_EA_ST_IY_SP_REPORTE_TRAZABILIDAD');
-
-// B. Reporte de Stock Crítico 
 $stock_critico = ejecutar_reporte_cursor($conn, 'CA_EA_ST_IY_SP_REPORTE_STOCK_CRITICO');
 
-// C. Auditoría de Movimientos 
+// Auditoria de trasvasijados
 $sql_auditoria = "SELECT id_log, id_lote, usuario_bd, fecha_movimiento, contenedor_origen, contenedor_destino, accion
                   FROM CA_EA_ST_IY_AUDITORIA_MOVIMIENTOS ORDER BY fecha_movimiento DESC";
 $stmt_auditoria = oci_parse($conn, $sql_auditoria);
@@ -49,7 +45,7 @@ oci_free_statement($stmt_auditoria);
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Reportes de Gestión de Viña</title>
+    <title>Reportes del Sistema - Vina</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" rel="stylesheet">
     <style>
@@ -60,16 +56,16 @@ oci_free_statement($stmt_auditoria);
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
         <div class="container">
-            <a class="navbar-brand" href="dashboard.php">Sistema Viña</a>
+            <a class="navbar-brand" href="dashboard.php">Sistema Vina</a>
             <span class="navbar-text text-white">
-                Reportes e Inteligencia de Negocio
+                Reportes del Sistema
             </span>
         </div>
     </nav>
     
     <div class="container mt-5">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2>📊 Reportes de Gestión de Viña</h2>
+            <h2>Reportes del Sistema</h2>
             <a href="dashboard.php" class="btn btn-secondary">Volver al Panel</a>
         </div>
 
@@ -134,7 +130,7 @@ oci_free_statement($stmt_auditoria);
             <div class="tab-pane fade" id="stock" role="tabpanel" aria-labelledby="stock-tab">
                 <div class="card border-danger">
                     <div class="card-body">
-                        <h4 class="card-title text-danger">🚨 Insumos bajo Stock Mínimo</h4>
+                        <h4 class="card-title text-danger">Insumos bajo Stock Minimo</h4>
                         <?php if (empty($stock_critico)): ?>
                             <div class="alert alert-success">No se detectaron insumos en stock crítico.</div>
                         <?php else: ?>

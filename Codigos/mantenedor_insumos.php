@@ -1,11 +1,15 @@
 <?php
 session_start();
+if (!isset($_SESSION['id_usuario'])) {
+    header("Location: index.php");
+    exit;
+}
 require 'db.php';
 
 $mensaje = "";
 $error_ocurrido = false;
 
-// --- 0. PREPARAR DATOS AUXILIARES: PROVEEDORES ---
+// Proveedores
 $proveedores = [];
 $sql_prov = "SELECT ID_PROVEEDOR, RAZON_SOCIAL FROM CA_EA_ST_IY_PROVEEDOR ORDER BY RAZON_SOCIAL";
 $stmt_prov = oci_parse($conn, $sql_prov);
@@ -15,19 +19,17 @@ if (@oci_execute($stmt_prov)) {
     }
 } 
 
-// --- 1. LOGICA DE CREATE, UPDATE, DELETE
+// Guardar cambios
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    
     $accion = $_POST['accion'] ?? '';
     
-    // ------------------- CREAR INSUMO (M3) -------------------
+    // Crear
     if ($accion === 'crear') {
         $id_proveedor = filter_input(INPUT_POST, 'id_proveedor', FILTER_VALIDATE_INT);
         $nombre_insumo = $_POST['nombre_insumo'];
         $stock_min = filter_input(INPUT_POST, 'stock_min', FILTER_VALIDATE_INT);
         $unidad_medida = $_POST['unidad_medida'];
         
-        // p_prov, p_nom, p_min, p_uni
         $sql = 'BEGIN CA_EA_ST_IY_PKG_VINA.CA_EA_ST_IY_SP_CRUD_CREAR_INSUMO(:p_prov, :p_nom, :p_min, :p_uni); END;';
         $stmt = oci_parse($conn, $sql);
         
@@ -47,7 +49,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         @oci_free_statement($stmt);
     }
     
-    // ------------------- ACTUALIZAR STOCK (M4) -------------------
+    // Actualizar stock
     if ($accion === 'actualizar_stock') {
         $id_insumo = filter_input(INPUT_POST, 'edit_id_insumo', FILTER_VALIDATE_INT);
         $cantidad = filter_input(INPUT_POST, 'cantidad_movimiento', FILTER_VALIDATE_INT);
@@ -60,7 +62,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         
         if (@oci_execute($stmt)) {
             oci_commit($conn);
-            $mensaje = "Stock del Insumo ID $id_insumo actualizado. Nuevo Stock: $cantidad.";
+            $mensaje = "Stock del insumo ID $id_insumo actualizado. Nuevo Stock: $cantidad.";
         } else {
             $e = oci_error($stmt);
             $mensaje = "Error al actualizar stock: " . $e['message'];
@@ -69,7 +71,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         @oci_free_statement($stmt);
     }
     
-    // ------------------- ELIMINAR INSUMO (M5) -------------------
+    // Eliminar
     if ($accion === 'eliminar') {
         $id_insumo = filter_input(INPUT_POST, 'id_insumo_eliminar', FILTER_VALIDATE_INT);
         
@@ -79,11 +81,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         
         if (@oci_execute($stmt)) {
             oci_commit($conn);
-            $mensaje = "🗑️ Insumo ID $id_insumo eliminado correctamente.";
+            $mensaje = "Insumo ID $id_insumo eliminado correctamente.";
         } else {
             $e = oci_error($stmt);
             if ($e['code'] == 2292) {
-                 $mensaje = "Error: El insumo ID $id_insumo no puede ser eliminado porque tiene aplicaciones históricas asociadas.";
+                 $mensaje = "Error: El insumo ID $id_insumo no puede ser eliminado porque tiene aplicaciones historicas asociadas.";
             } else {
                  $mensaje = "Error al eliminar insumo: " . $e['message'];
             }
@@ -93,7 +95,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 
-// --- 2. (READ):
+// Listado
 $sql_list = "SELECT 
                 I.ID_INSUMO, 
                 I.NOMBRE_INSUMO, 
@@ -207,7 +209,7 @@ if (!$list_execution_exitosa) {
                                         <td>
                                             <?php echo number_format($row['STOCK_ACTUAL'], 0, ',', '.'); ?> <?php echo $row['UNIDAD_MEDIDA']; ?>
                                             <?php if ($alerta_stock): ?>
-                                                <span class="badge bg-danger ms-2">🚨 Stock Crítico</span>
+                                                <span class="badge bg-danger ms-2">Stock Critico</span>
                                             <?php endif; ?>
                                         </td>
                                         <td><?php echo number_format($row['STOCK_MIN'], 0, ',', '.'); ?></td>
