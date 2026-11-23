@@ -27,15 +27,8 @@ function ejecutar_reporte_cursor($conn, $sp_name) {
 
 // --- 2. CONSULTAS A LOS REPORTES ---
 
-// A. Trazabilidad Completa 
-$sql_trazabilidad = "SELECT * FROM CA_EA_ST_IY_V_TRAZABILIDAD_COMPLETA ORDER BY ID_LOTE DESC";
-$stmt_trazabilidad = oci_parse($conn, $sql_trazabilidad);
-@oci_execute($stmt_trazabilidad);
-$trazabilidad = [];
-while ($row = oci_fetch_assoc($stmt_trazabilidad)) {
-    $trazabilidad[] = $row;
-}
-oci_free_statement($stmt_trazabilidad);
+// A. Trazabilidad Completa (Llamando al SP con cursor)
+$trazabilidad = ejecutar_reporte_cursor($conn, 'CA_EA_ST_IY_SP_REPORTE_TRAZABILIDAD');
 
 // B. Reporte de Stock Crítico 
 $stock_critico = ejecutar_reporte_cursor($conn, 'CA_EA_ST_IY_SP_REPORTE_STOCK_CRITICO');

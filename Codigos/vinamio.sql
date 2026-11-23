@@ -214,41 +214,7 @@ CREATE TABLE CA_EA_ST_IY_AUDITORIA_MOVIMIENTOS (
 CREATE SEQUENCE CA_EA_ST_IY_SEQ_AUDITORIA START WITH 1 INCREMENT BY 1;
 
 -- ==========================================================================
--- 4. VISTAS PARA REPORTES (Requerimiento: 3 Reportes)
--- ==========================================================================
-
--- REPORTE 1: Trazabilidad Completa
-CREATE OR REPLACE VIEW CA_EA_ST_IY_V_TRAZABILIDAD_COMPLETA AS
-SELECT 
-    l.id_lote,
-    p.nombre_prod AS producto_final,
-    c.nombre_cuartel AS origen_cuartel,
-    v.nombre_variedad,
-    rc.fecha AS fecha_cosecha,
-    cont.material || ' (' || cont.capacidad || 'L)' AS contenedor_info,
-    l.estado AS estado_vino
-FROM CA_EA_ST_IY_LOTE l
-JOIN CA_EA_ST_IY_RECEPCION_COSECHA rc ON l.id_cosecha = rc.id_cosecha
-JOIN CA_EA_ST_IY_CUARTEL c ON rc.id_cuartel = c.id_cuartel
-JOIN CA_EA_ST_IY_VARIEDAD_UVA v ON c.id_variedad = v.id_variedad
-LEFT JOIN CA_EA_ST_IY_CONTENEDORES cont ON l.id_contenedor = cont.id_contenedor
-LEFT JOIN CA_EA_ST_IY_EMBOTELLADO emb ON l.id_lote = emb.id_lote
-LEFT JOIN CA_EA_ST_IY_PRODUCTOS p ON emb.id_producto = p.id_producto;
-
--- REPORTE 2: Alerta de Stock Crítico
-CREATE OR REPLACE VIEW CA_EA_ST_IY_V_ALERTA_INSUMOS AS
-SELECT 
-    i.nombre_insumo,
-    i.stock_actual,
-    i.stock_min,
-    (i.stock_min - i.stock_actual) AS deficit,
-    prov.razon_social AS proveedor
-FROM CA_EA_ST_IY_INSUMOS i
-JOIN CA_EA_ST_IY_PROVEEDOR prov ON i.id_proveedor = prov.id_proveedor
-WHERE i.stock_actual <= i.stock_min;
-
--- ==========================================================================
--- 5. TRIGGERS (Requerimiento: Automatización y Monitoreo)
+-- 4. TRIGGERS (Requerimiento: Automatización y Monitoreo)
 -- ==========================================================================
 
 -- TRIGGER 1: Auditoría de Movimientos (Log)
@@ -392,13 +358,38 @@ CREATE OR REPLACE PACKAGE BODY CA_EA_ST_IY_PKG_VINA AS
     -- =============================================
     PROCEDURE CA_EA_ST_IY_SP_REPORTE_TRAZABILIDAD(p_cursor OUT SYS_REFCURSOR) IS
     BEGIN
-        -- Usa la Vista que creamos antes, pero la devuelve como cursor 
-        OPEN p_cursor FOR SELECT * FROM CA_EA_ST_IY_V_TRAZABILIDAD_COMPLETA;
+        OPEN p_cursor FOR 
+            SELECT 
+                l.id_lote,
+                p.nombre_prod AS producto_final,
+                c.nombre_cuartel AS origen_cuartel,
+                v.nombre_variedad,
+                rc.fecha AS fecha_cosecha,
+                cont.material || ' (' || cont.capacidad || 'L)' AS contenedor_info,
+                l.estado AS estado_vino
+            FROM CA_EA_ST_IY_LOTE l
+            JOIN CA_EA_ST_IY_RECEPCION_COSECHA rc ON l.id_cosecha = rc.id_cosecha
+            JOIN CA_EA_ST_IY_CUARTEL c ON rc.id_cuartel = c.id_cuartel
+            JOIN CA_EA_ST_IY_VARIEDAD_UVA v ON c.id_variedad = v.id_variedad
+            LEFT JOIN CA_EA_ST_IY_CONTENEDORES cont ON l.id_contenedor = cont.id_contenedor
+            LEFT JOIN CA_EA_ST_IY_EMBOTELLADO emb ON l.id_lote = emb.id_lote
+            LEFT JOIN CA_EA_ST_IY_PRODUCTOS p ON emb.id_producto = p.id_producto
+            ORDER BY l.id_lote DESC;
     END CA_EA_ST_IY_SP_REPORTE_TRAZABILIDAD;
 
     PROCEDURE CA_EA_ST_IY_SP_REPORTE_STOCK_CRITICO(p_cursor OUT SYS_REFCURSOR) IS
     BEGIN
-        OPEN p_cursor FOR SELECT * FROM CA_EA_ST_IY_V_ALERTA_INSUMOS;
+        OPEN p_cursor FOR 
+            SELECT 
+                i.nombre_insumo,
+                i.stock_actual,
+                i.stock_min,
+                (i.stock_min - i.stock_actual) AS deficit,
+                prov.razon_social AS proveedor
+            FROM CA_EA_ST_IY_INSUMOS i
+            JOIN CA_EA_ST_IY_PROVEEDOR prov ON i.id_proveedor = prov.id_proveedor
+            WHERE i.stock_actual <= i.stock_min
+            ORDER BY deficit DESC;
     END CA_EA_ST_IY_SP_REPORTE_STOCK_CRITICO;
 
     PROCEDURE CA_EA_ST_IY_SP_REPORTE_OCUPACION_BODEGA(p_cursor OUT SYS_REFCURSOR) IS
