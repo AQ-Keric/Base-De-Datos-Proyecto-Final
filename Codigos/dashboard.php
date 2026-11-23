@@ -31,14 +31,20 @@ if (!isset($_SESSION['id_usuario'])) {
             
             <div class="col-md-4">
                 <div class="card h-100 border-primary">
-                    <div class="card-header bg-primary text-white">Mantenedores</div>
+                    <div class="card-header bg-primary text-white">Mantenedores CRUD (10)</div>
                     <div class="card-body">
-                        <p class="card-text">Gestión de datos maestros (CRUD).</p>
-                        <div class="d-grid gap-2">
-                            <a href="mantenedor_contenedores.php" class="btn btn-outline-primary">Gestión Contenedores</a>
-                            <a href="mantenedor_personal.php" class="btn btn-outline-primary">Gestión Personal</a>
-                            <a href="mantenedor_insumos.php" class="btn btn-outline-primary">Gestión de Insumos</a>
-                            <a href="mantenedor_productos.php" class="btn btn-outline-primary">Gestión de Productos</a>
+                        <p class="card-text">Gestión de datos maestros.</p>
+                        <div class="d-grid gap-1">
+                            <a href="mantenedor_contenedores.php" class="btn btn-sm btn-outline-primary text-start">1. Contenedores</a>
+                            <a href="mantenedor_personal.php" class="btn btn-sm btn-outline-primary text-start">2. Personal</a>
+                            <a href="mantenedor_insumos.php" class="btn btn-sm btn-outline-primary text-start">3. Insumos</a>
+                            <a href="mantenedor_productos.php" class="btn btn-sm btn-outline-primary text-start">4. Productos</a>
+                            <a href="mantenedor_clientes.php" class="btn btn-sm btn-outline-primary text-start">5. Clientes</a>
+                            <a href="mantenedor_proveedores.php" class="btn btn-sm btn-outline-primary text-start">6. Proveedores</a>
+                            <a href="mantenedor_variedades.php" class="btn btn-sm btn-outline-primary text-start">7. Variedades de Uva</a>
+                            <a href="mantenedor_cuarteles.php" class="btn btn-sm btn-outline-primary text-start">8. Cuarteles</a>
+                            <a href="mantenedor_cargos.php" class="btn btn-sm btn-outline-primary text-start">9. Cargos</a>
+                            <a href="mantenedor_usuarios.php" class="btn btn-sm btn-outline-primary text-start">10. Usuarios</a>
                         </div>
                     </div>
                 </div>
@@ -46,28 +52,29 @@ if (!isset($_SESSION['id_usuario'])) {
 
             <div class="col-md-4">
                 <div class="card h-100 border-success">
-                    <div class="card-header bg-success text-white">Gestores de Proceso</div>
+                    <div class="card-header bg-success text-white">Gestores de Proceso (5)</div>
                     <div class="card-body">
-                        <p class="card-text">Registrar operaciones de vendimia y bodega.</p>
+                        <p class="card-text">Registrar operaciones de vendimia, bodega y ventas.</p>
                         <div class="d-grid gap-2">
-                            <a href="gestor_recepcion.php" class="btn btn-outline-success">Recepción Vendimia</a>
-                            <a href="gestor_trasvasijado.php" class="btn btn-outline-success">Gestion Trasvasijado</a>
-                            <a href="gestor_aplicacion_insumo.php" class="btn btn-outline-success">Aplicación de Insumos</a>
-                            <a href="gestor_embotellado.php" class="btn btn-outline-success">Gestión Embotellado</a>
+                            <a href="gestor_recepcion.php" class="btn btn-outline-success">Recepción Vendimia (G1)</a>
+                            <a href="gestor_trasvasijado.php" class="btn btn-outline-success">Gestión Trasvasijado (G2)</a>
+                            <a href="gestor_aplicacion_insumo.php" class="btn btn-outline-success">Aplicación de Insumos (G3)</a>
+                            <a href="gestor_embotellado.php" class="btn btn-outline-success">Gestión Embotellado (G4)</a>
+                            <a href="gestor_pedido.php" class="btn btn-outline-success">Crear Pedido de Venta (G5)</a>
                         </div>
                     </div>
                 </div>
             </div>
 
-            
-
             <div class="col-md-4">
                 <div class="card h-100 border-warning">
-                    <div class="card-header bg-warning text-dark">Reportes e Inteligencia</div>
+                    <div class="card-header bg-warning text-dark">Reportes Estratégicos (3)</div>
                     <div class="card-body">
-                        <p class="card-text">Visualización de datos y alertas.</p>
+                        <p class="card-text">Visualización de datos, KPIs y auditoría.</p>
                         <div class="d-grid gap-2">
-                            <a href="reporte.php" class="btn btn-outline-warning text-dark">Trazabilidad Completa</a>
+                            <a href="reporte.php#trazabilidad" class="btn btn-outline-warning text-dark">1. Trazabilidad Completa</a>
+                            <a href="reporte.php#stock" class="btn btn-outline-warning text-dark">2. Alertas Stock Crítico</a>
+                            <a href="reporte.php#auditoria" class="btn btn-outline-warning text-dark">3. Log de Auditoría</a>
                         </div>
                     </div>
                 </div>

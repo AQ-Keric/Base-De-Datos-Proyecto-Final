@@ -211,6 +211,13 @@ oci_free_statement($stmt_auditoria);
     <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
     <script>
         $(document).ready(function () {
+            var hash = window.location.hash;
+            if (hash) {
+                var triggerEl = document.querySelector('button[data-bs-target="' + hash + '"]');
+                if (triggerEl) {
+                    bootstrap.Tab.getOrCreateInstance(triggerEl).show();
+                }
+            }
 
             $('#tablaTrazabilidad').DataTable({
                 order: [[0, 'desc']], 
