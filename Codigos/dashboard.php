@@ -36,15 +36,19 @@ if (!isset($_SESSION['id_usuario'])) {
                         <p class="card-text">Gestion de datos maestros.</p>
                         <div class="d-grid gap-1">
                             <a href="mantenedor_contenedores.php" class="btn btn-sm btn-outline-primary text-start">Contenedores</a>
+                            <?php if ($_SESSION['perfil'] == 1): ?>
                             <a href="mantenedor_personal.php" class="btn btn-sm btn-outline-primary text-start">Personal</a>
+                            <?php endif; ?>
                             <a href="mantenedor_insumos.php" class="btn btn-sm btn-outline-primary text-start">Insumos</a>
                             <a href="mantenedor_productos.php" class="btn btn-sm btn-outline-primary text-start">Productos</a>
                             <a href="mantenedor_clientes.php" class="btn btn-sm btn-outline-primary text-start">Clientes</a>
                             <a href="mantenedor_proveedores.php" class="btn btn-sm btn-outline-primary text-start">Proveedores</a>
                             <a href="mantenedor_variedades.php" class="btn btn-sm btn-outline-primary text-start">Variedades de Uva</a>
                             <a href="mantenedor_cuarteles.php" class="btn btn-sm btn-outline-primary text-start">Cuarteles</a>
+                            <?php if ($_SESSION['perfil'] == 1): ?>
                             <a href="mantenedor_cargos.php" class="btn btn-sm btn-outline-primary text-start">Cargos</a>
                             <a href="mantenedor_usuarios.php" class="btn btn-sm btn-outline-primary text-start">Usuarios</a>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>

@@ -1,7 +1,7 @@
 <?php
 session_start();
-if (!isset($_SESSION['id_usuario'])) {
-    header("Location: index.php");
+if (!isset($_SESSION['id_usuario']) || $_SESSION['perfil'] != 1) {
+    header("Location: dashboard.php");
     exit;
 }
 require 'db.php';

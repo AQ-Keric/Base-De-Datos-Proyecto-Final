@@ -1,7 +1,7 @@
 <?php
 session_start();
-if (!isset($_SESSION['id_usuario'])) {
-    header("Location: index.php");
+if (!isset($_SESSION['id_usuario']) || $_SESSION['perfil'] != 1) {
+    header("Location: dashboard.php");
     exit;
 }
 require 'db.php';
@@ -9,11 +9,9 @@ require 'db.php';
 $mensaje = "";
 $error_ocurrido = false;
 
-// Guardar cambios
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $accion = $_POST['accion'] ?? '';
 
-    // Crear
     if ($accion === 'crear') {
         $nombre = trim($_POST['nombre_cargo'] ?? '');
 
@@ -21,32 +19,52 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $error_ocurrido = true;
             $mensaje = "Error: El nombre del cargo es obligatorio.";
         } else {
-            $sql = 'INSERT INTO CA_EA_ST_IY_CARGO (nombre_cargo) VALUES (:p_nombre)';
+            $sql = 'BEGIN CA_EA_ST_IY_SP_CRUD_CREAR_CARGO(:p_nombre); END;';
             $stmt = oci_parse($conn, $sql);
             oci_bind_by_name($stmt, ':p_nombre', $nombre);
 
             if (@oci_execute($stmt)) {
-                oci_commit($conn);
                 $mensaje = "Cargo '$nombre' registrado con exito.";
             } else {
                 $e = oci_error($stmt);
                 $error_ocurrido = true;
                 $mensaje = "Error al crear cargo: " . $e['message'];
-                oci_rollback($conn);
             }
             oci_free_statement($stmt);
         }
     }
 
-    // Eliminar
+    if ($accion === 'editar') {
+        $id_cargo = filter_input(INPUT_POST, 'id_cargo', FILTER_VALIDATE_INT);
+        $nombre = trim($_POST['nombre_cargo'] ?? '');
+
+        if ($id_cargo === false || empty($nombre)) {
+            $error_ocurrido = true;
+            $mensaje = "Error: Datos incompletos.";
+        } else {
+            $sql = 'BEGIN CA_EA_ST_IY_SP_CRUD_UPDATE_CARGO(:p_id, :p_nombre); END;';
+            $stmt = oci_parse($conn, $sql);
+            oci_bind_by_name($stmt, ':p_id', $id_cargo);
+            oci_bind_by_name($stmt, ':p_nombre', $nombre);
+
+            if (@oci_execute($stmt)) {
+                $mensaje = "Cargo ID $id_cargo actualizado con exito.";
+            } else {
+                $e = oci_error($stmt);
+                $error_ocurrido = true;
+                $mensaje = "Error al actualizar cargo: " . $e['message'];
+            }
+            oci_free_statement($stmt);
+        }
+    }
+
     if ($accion === 'eliminar') {
         $id_cargo = filter_input(INPUT_POST, 'id_cargo_eliminar', FILTER_VALIDATE_INT);
-        $sql = 'DELETE FROM CA_EA_ST_IY_CARGO WHERE id_cargo = :p_id';
+        $sql = 'BEGIN CA_EA_ST_IY_SP_CRUD_DEL_CARGO(:p_id); END;';
         $stmt = oci_parse($conn, $sql);
         oci_bind_by_name($stmt, ':p_id', $id_cargo);
 
         if (@oci_execute($stmt)) {
-            oci_commit($conn);
             $mensaje = "Cargo ID $id_cargo eliminado correctamente.";
         } else {
             $e = oci_error($stmt);
@@ -56,7 +74,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             } else {
                 $mensaje = "Error al eliminar: " . $e['message'];
             }
-            oci_rollback($conn);
         }
         oci_free_statement($stmt);
     }
@@ -67,19 +84,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 if (isset($_GET['mensaje'])) {
     $mensaje = $_GET['mensaje'];
-    $error_ocurrido = $_GET['error'] == '1';
+    $error_ocurrido = ($_GET['error'] ?? '0') == '1';
 }
 
 // Listado
-$cargos = [];
-$sql_list = "SELECT id_cargo, nombre_cargo FROM CA_EA_ST_IY_CARGO ORDER BY id_cargo";
-$stmt_list = oci_parse($conn, $sql_list);
-if (@oci_execute($stmt_list)) {
-    while ($row = oci_fetch_assoc($stmt_list)) {
-        $cargos[] = $row;
+$cargos = consultar_cursor($conn, 'CA_EA_ST_IY_SP_CRUD_LISTAR_CARGOS');
+
+$editando = null;
+if (isset($_GET['editar'])) {
+    foreach ($cargos as $item) {
+        if ($item['ID_CARGO'] == $_GET['editar']) {
+            $editando = $item;
+            break;
+        }
     }
 }
-oci_free_statement($stmt_list);
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -116,16 +135,26 @@ oci_free_statement($stmt_list);
             <div class="col-md-4">
                 <div class="card mb-4">
                     <div class="card-header bg-primary text-white">
-                        <h5 class="card-title mb-0">Nuevo Cargo</h5>
+                        <?php echo $editando ? 'Editar Cargo #' . $editando['ID_CARGO'] : 'Nuevo Cargo'; ?>
                     </div>
                     <div class="card-body">
                         <form action="mantenedor_cargos.php" method="POST">
-                            <input type="hidden" name="accion" value="crear">
+                            <input type="hidden" name="accion" value="<?php echo $editando ? 'editar' : 'crear'; ?>">
+                            <?php if ($editando): ?>
+                                <input type="hidden" name="id_cargo" value="<?php echo $editando['ID_CARGO']; ?>">
+                            <?php endif; ?>
+
                             <div class="mb-3">
                                 <label class="form-label">Nombre del Cargo:</label>
-                                <input type="text" class="form-control" name="nombre_cargo" placeholder="ej: Enólogo Jefe, Bodeguero" required>
+                                <input type="text" class="form-control" name="nombre_cargo" placeholder="ej: Enologo Jefe, Bodeguero" required
+                                       value="<?php echo htmlspecialchars($editando['NOMBRE_CARGO'] ?? ''); ?>">
                             </div>
-                            <button type="submit" class="btn btn-primary w-100">Guardar Cargo</button>
+                            <button type="submit" class="btn btn-primary w-100">
+                                <?php echo $editando ? 'Actualizar Cargo' : 'Guardar Cargo'; ?>
+                            </button>
+                            <?php if ($editando): ?>
+                                <a href="mantenedor_cargos.php" class="btn btn-secondary w-100 mt-2">Cancelar</a>
+                            <?php endif; ?>
                         </form>
                     </div>
                 </div>
@@ -133,9 +162,7 @@ oci_free_statement($stmt_list);
 
             <div class="col-md-8">
                 <div class="card">
-                    <div class="card-header bg-dark text-white">
-                        <h5 class="card-title mb-0">Listado de Cargos</h5>
-                    </div>
+                    <div class="card-header bg-dark text-white">Listado de Cargos</div>
                     <div class="card-body">
                         <table class="table table-striped table-hover">
                             <thead>
@@ -154,6 +181,7 @@ oci_free_statement($stmt_list);
                                             <td><?php echo $c['ID_CARGO']; ?></td>
                                             <td><?php echo htmlspecialchars($c['NOMBRE_CARGO']); ?></td>
                                             <td>
+                                                <a href="mantenedor_cargos.php?editar=<?php echo $c['ID_CARGO']; ?>" class="btn btn-sm btn-warning">Editar</a>
                                                 <form action="mantenedor_cargos.php" method="POST" style="display:inline;" onsubmit="return confirm('¿Eliminar cargo?');">
                                                     <input type="hidden" name="accion" value="eliminar">
                                                     <input type="hidden" name="id_cargo_eliminar" value="<?php echo $c['ID_CARGO']; ?>">
@@ -173,3 +201,4 @@ oci_free_statement($stmt_list);
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+<?php oci_close($conn); ?>
