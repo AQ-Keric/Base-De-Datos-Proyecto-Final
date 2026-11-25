@@ -24,7 +24,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $error_ocurrido = true;
             $mensaje = "Error: El RUT y la Razón Social son obligatorios.";
         } else {
-            $sql = 'BEGIN CA_EA_ST_IY_PKG_VINA.CA_EA_ST_IY_SP_CRUD_CREAR_CLIENTE(:p_rut, :p_razon, :p_dir); END;';
+            $sql = 'BEGIN CA_EA_ST_IY_SP_CRUD_CREAR_CLIENTE(:p_rut, :p_razon, :p_dir); END;';
             $stmt = oci_parse($conn, $sql);
             oci_bind_by_name($stmt, ':p_rut', $rut);
             oci_bind_by_name($stmt, ':p_razon', $razon);
@@ -50,7 +50,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $error_ocurrido = true;
             $mensaje = "Error: ID de cliente y dirección requeridos.";
         } else {
-            $sql = 'BEGIN CA_EA_ST_IY_PKG_VINA.CA_EA_ST_IY_SP_CRUD_UPDATE_CLIENTE(:p_id, :p_dir); END;';
+            $sql = 'BEGIN CA_EA_ST_IY_SP_CRUD_UPDATE_CLIENTE(:p_id, :p_dir); END;';
             $stmt = oci_parse($conn, $sql);
             oci_bind_by_name($stmt, ':p_id', $id_cliente);
             oci_bind_by_name($stmt, ':p_dir', $direccion);

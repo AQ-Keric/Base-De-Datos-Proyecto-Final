@@ -8,7 +8,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $_POST['email'];
     $pass = $_POST['password'];
 
-    $sql = 'BEGIN CA_EA_ST_IY_PKG_VINA.CA_EA_ST_IY_SP_LOGIN(:p_email, :p_pass, :p_cursor); END;';
+    $sql = 'BEGIN CA_EA_ST_IY_SP_LOGIN(:p_email, :p_pass, :p_cursor); END;';
     $stmt = oci_parse($conn, $sql);
     $cursor = oci_new_cursor($conn);
 

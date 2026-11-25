@@ -21,7 +21,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $error_ocurrido = true;
         $mensaje = "Error: Lote y Nuevo Contenedor son obligatorios.";
     } else {
-        $sql = 'BEGIN CA_EA_ST_IY_PKG_VINA.CA_EA_ST_IY_SP_GESTION_TRASVASIJADO(:p_lote, :p_cont); END;';
+        $sql = 'BEGIN CA_EA_ST_IY_SP_GESTION_TRASVASIJADO(:p_lote, :p_cont); END;';
         $stmt = oci_parse($conn, $sql);
         
         oci_bind_by_name($stmt, ':p_lote', $id_lote);
@@ -64,7 +64,7 @@ while ($row = oci_fetch_assoc($stmt_lotes)) {
 oci_free_statement($stmt_lotes);
 
 $cursor_cont = oci_new_cursor($conn);
-$sql_cont = 'BEGIN CA_EA_ST_IY_PKG_VINA.CA_EA_ST_IY_SP_REPORTE_OCUPACION_BODEGA(:cursor); END;'; 
+$sql_cont = 'BEGIN CA_EA_ST_IY_SP_REPORTE_OCUPACION_BODEGA(:cursor); END;'; 
 $stmt_cont = oci_parse($conn, $sql_cont);
 oci_bind_by_name($stmt_cont, ':cursor', $cursor_cont, -1, OCI_B_CURSOR);
 @oci_execute($stmt_cont);

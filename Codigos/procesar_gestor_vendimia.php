@@ -15,7 +15,7 @@ if ($id_cuartel === false || $id_cuartel === null ||
     die("Error de Validación: Los datos ingresados son inválidos o incompletos.");
 }
 
-$sql = 'BEGIN CA_EA_ST_IY_PKG_VINA.CA_EA_ST_IY_SP_GESTION_RECEPCION(:cuartel, :personal, :kilos, :contenedor); END;';
+$sql = 'BEGIN CA_EA_ST_IY_SP_GESTION_RECEPCION(:cuartel, :personal, :kilos, :contenedor); END;';
 
 $stmt = oci_parse($conn, $sql);
 

@@ -22,7 +22,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $error_ocurrido = true;
             $mensaje = "Error: Nombre y Precio (debe ser > 0) son obligatorios.";
         } else {
-            $sql = 'BEGIN CA_EA_ST_IY_PKG_VINA.CA_EA_ST_IY_SP_CRUD_CREAR_PRODUCTO(:p_nombre, :p_precio); END;';
+            $sql = 'BEGIN CA_EA_ST_IY_SP_CRUD_CREAR_PRODUCTO(:p_nombre, :p_precio); END;';
             $stmt = oci_parse($conn, $sql);
             
             oci_bind_by_name($stmt, ':p_nombre', $nombre_prod);

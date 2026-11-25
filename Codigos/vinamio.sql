@@ -29,12 +29,6 @@ EXCEPTION
     WHEN OTHERS THEN NULL;
 END;
 /
-BEGIN
-    EXECUTE IMMEDIATE 'DROP PACKAGE CA_EA_ST_IY_PKG_VINA';
-EXCEPTION
-    WHEN OTHERS THEN NULL;
-END;
-/
 
 -- 2. Creacion de tablas
 
@@ -240,241 +234,251 @@ EXCEPTION
 END;
 /
 
--- 4. Paquete principal
-CREATE OR REPLACE PACKAGE CA_EA_ST_IY_PKG_VINA AS
-    -- Funciones
-    FUNCTION CA_EA_ST_IY_FN_CALCULAR_LITROS(p_kilos NUMBER) RETURN NUMBER;
+-- 4. Funcion y procedimientos almacenados
 
-    -- Reportes con cursores
-    PROCEDURE CA_EA_ST_IY_SP_REPORTE_TRAZABILIDAD(p_cursor OUT SYS_REFCURSOR); 
-    PROCEDURE CA_EA_ST_IY_SP_REPORTE_STOCK_CRITICO(p_cursor OUT SYS_REFCURSOR); 
-    PROCEDURE CA_EA_ST_IY_SP_REPORTE_OCUPACION_BODEGA(p_cursor OUT SYS_REFCURSOR); 
-
-    -- Procesos de negocio
-    PROCEDURE CA_EA_ST_IY_SP_GESTION_RECEPCION(
-        p_id_cuartel IN NUMBER, p_id_personal IN NUMBER, p_kilos IN NUMBER, p_id_contenedor IN NUMBER
-    );
-    PROCEDURE CA_EA_ST_IY_SP_GESTION_TRASVASIJADO(
-        p_id_lote IN NUMBER, p_nuevo_contenedor IN NUMBER
-    );
-    PROCEDURE CA_EA_ST_IY_SP_GESTION_APLICAR_INSUMO(
-        p_id_lote IN NUMBER, p_id_insumo IN NUMBER, p_id_personal IN NUMBER, p_cantidad IN NUMBER, p_motivo IN VARCHAR2
-    );
-    PROCEDURE CA_EA_ST_IY_SP_GESTION_CREAR_PEDIDO(
-        p_rut_cliente IN VARCHAR2, p_id_producto IN NUMBER, p_cantidad IN NUMBER
-    );
-    PROCEDURE CA_EA_ST_IY_SP_GESTION_EMBOTELLADO(
-        p_id_lote IN NUMBER, p_id_producto IN NUMBER, p_cantidad_botellas IN NUMBER
-    );
-
-    -- Operaciones CRUD y login
-    PROCEDURE CA_EA_ST_IY_SP_LOGIN(p_email IN VARCHAR2, p_pass IN VARCHAR2, p_cursor OUT SYS_REFCURSOR);
-    PROCEDURE CA_EA_ST_IY_SP_CRUD_CREAR_CONTENEDOR(p_material IN VARCHAR2, p_capacidad IN NUMBER);
-    PROCEDURE CA_EA_ST_IY_SP_CRUD_ACTUALIZAR_CONTENEDOR(
-        p_id IN NUMBER, 
-        p_material IN VARCHAR2, 
-        p_capacidad IN NUMBER, 
-        p_usos IN NUMBER
-    );
-    PROCEDURE CA_EA_ST_IY_SP_CRUD_ELIMINAR_CONTENEDOR(p_id IN NUMBER);
-    PROCEDURE CA_EA_ST_IY_SP_CRUD_CREAR_INSUMO(p_prov IN NUMBER, p_nom IN VARCHAR2, p_min IN NUMBER, p_uni IN VARCHAR2);
-    PROCEDURE CA_EA_ST_IY_SP_CRUD_UPDATE_STOCK(p_id IN NUMBER, p_cant IN NUMBER);
-    PROCEDURE CA_EA_ST_IY_SP_CRUD_DEL_INSUMO(p_id IN NUMBER);
-    PROCEDURE CA_EA_ST_IY_SP_CRUD_CREAR_PERSONAL(p_rut IN VARCHAR2, p_nom IN VARCHAR2, p_ape IN VARCHAR2, p_cargo IN NUMBER);
-    PROCEDURE CA_EA_ST_IY_SP_CRUD_DEL_PERSONAL(p_id IN NUMBER);
-    PROCEDURE CA_EA_ST_IY_SP_CRUD_CREAR_CLIENTE(p_rut IN VARCHAR2, p_razon IN VARCHAR2, p_dir IN VARCHAR2);
-    PROCEDURE CA_EA_ST_IY_SP_CRUD_UPDATE_CLIENTE(p_id IN NUMBER, p_dir IN VARCHAR2);
-    PROCEDURE CA_EA_ST_IY_SP_CRUD_CREAR_PRODUCTO(p_nombre IN VARCHAR2, p_precio IN NUMBER);
-
-END CA_EA_ST_IY_PKG_VINA;
+CREATE OR REPLACE FUNCTION CA_EA_ST_IY_FN_CALCULAR_LITROS(p_kilos NUMBER) RETURN NUMBER IS
+BEGIN
+    RETURN p_kilos * 0.70; 
+END CA_EA_ST_IY_FN_CALCULAR_LITROS;
 /
 
-CREATE OR REPLACE PACKAGE BODY CA_EA_ST_IY_PKG_VINA AS
+-- Reportes
+CREATE OR REPLACE PROCEDURE CA_EA_ST_IY_SP_REPORTE_TRAZABILIDAD(p_cursor OUT SYS_REFCURSOR) IS
+BEGIN
+    OPEN p_cursor FOR 
+        SELECT 
+            l.id_lote,
+            p.nombre_prod AS producto_final,
+            c.nombre_cuartel AS origen_cuartel,
+            v.nombre_variedad,
+            rc.fecha AS fecha_cosecha,
+            cont.material || ' (' || cont.capacidad || 'L)' AS contenedor_info,
+            l.estado AS estado_vino
+        FROM CA_EA_ST_IY_LOTE l
+        JOIN CA_EA_ST_IY_RECEPCION_COSECHA rc ON l.id_cosecha = rc.id_cosecha
+        JOIN CA_EA_ST_IY_CUARTEL c ON rc.id_cuartel = c.id_cuartel
+        JOIN CA_EA_ST_IY_VARIEDAD_UVA v ON c.id_variedad = v.id_variedad
+        LEFT JOIN CA_EA_ST_IY_CONTENEDORES cont ON l.id_contenedor = cont.id_contenedor
+        LEFT JOIN CA_EA_ST_IY_EMBOTELLADO emb ON l.id_lote = emb.id_lote
+        LEFT JOIN CA_EA_ST_IY_PRODUCTOS p ON emb.id_producto = p.id_producto
+        ORDER BY l.id_lote DESC;
+END CA_EA_ST_IY_SP_REPORTE_TRAZABILIDAD;
+/
 
-    -- FUNCION AUXILIAR
-    FUNCTION CA_EA_ST_IY_FN_CALCULAR_LITROS(p_kilos NUMBER) RETURN NUMBER IS
-    BEGIN
-        RETURN p_kilos * 0.70; 
-    END CA_EA_ST_IY_FN_CALCULAR_LITROS;
+CREATE OR REPLACE PROCEDURE CA_EA_ST_IY_SP_REPORTE_STOCK_CRITICO(p_cursor OUT SYS_REFCURSOR) IS
+BEGIN
+    OPEN p_cursor FOR 
+        SELECT 
+            i.nombre_insumo,
+            i.stock_actual,
+            i.stock_min,
+            (i.stock_min - i.stock_actual) AS deficit,
+            prov.razon_social AS proveedor
+        FROM CA_EA_ST_IY_INSUMOS i
+        JOIN CA_EA_ST_IY_PROVEEDOR prov ON i.id_proveedor = prov.id_proveedor
+        WHERE i.stock_actual <= i.stock_min
+        ORDER BY deficit DESC;
+END CA_EA_ST_IY_SP_REPORTE_STOCK_CRITICO;
+/
 
-    -- Reportes
-    PROCEDURE CA_EA_ST_IY_SP_REPORTE_TRAZABILIDAD(p_cursor OUT SYS_REFCURSOR) IS
-    BEGIN
-        OPEN p_cursor FOR 
-            SELECT 
-                l.id_lote,
-                p.nombre_prod AS producto_final,
-                c.nombre_cuartel AS origen_cuartel,
-                v.nombre_variedad,
-                rc.fecha AS fecha_cosecha,
-                cont.material || ' (' || cont.capacidad || 'L)' AS contenedor_info,
-                l.estado AS estado_vino
-            FROM CA_EA_ST_IY_LOTE l
-            JOIN CA_EA_ST_IY_RECEPCION_COSECHA rc ON l.id_cosecha = rc.id_cosecha
-            JOIN CA_EA_ST_IY_CUARTEL c ON rc.id_cuartel = c.id_cuartel
-            JOIN CA_EA_ST_IY_VARIEDAD_UVA v ON c.id_variedad = v.id_variedad
-            LEFT JOIN CA_EA_ST_IY_CONTENEDORES cont ON l.id_contenedor = cont.id_contenedor
-            LEFT JOIN CA_EA_ST_IY_EMBOTELLADO emb ON l.id_lote = emb.id_lote
-            LEFT JOIN CA_EA_ST_IY_PRODUCTOS p ON emb.id_producto = p.id_producto
-            ORDER BY l.id_lote DESC;
-    END CA_EA_ST_IY_SP_REPORTE_TRAZABILIDAD;
+CREATE OR REPLACE PROCEDURE CA_EA_ST_IY_SP_REPORTE_OCUPACION_BODEGA(p_cursor OUT SYS_REFCURSOR) IS
+BEGIN
+    OPEN p_cursor FOR 
+        SELECT c.id_contenedor, c.material, c.capacidad, 
+               c.nro_usos, 
+               NVL(l.litros_actuales, 0) as ocupacion,
+               CASE WHEN l.id_lote IS NOT NULL THEN 'OCUPADO' ELSE 'LIBRE' END as estado
+        FROM CA_EA_ST_IY_CONTENEDORES c
+        LEFT JOIN CA_EA_ST_IY_LOTE l ON c.id_contenedor = l.id_contenedor;
+END CA_EA_ST_IY_SP_REPORTE_OCUPACION_BODEGA;
+/
 
-    PROCEDURE CA_EA_ST_IY_SP_REPORTE_STOCK_CRITICO(p_cursor OUT SYS_REFCURSOR) IS
-    BEGIN
-        OPEN p_cursor FOR 
-            SELECT 
-                i.nombre_insumo,
-                i.stock_actual,
-                i.stock_min,
-                (i.stock_min - i.stock_actual) AS deficit,
-                prov.razon_social AS proveedor
-            FROM CA_EA_ST_IY_INSUMOS i
-            JOIN CA_EA_ST_IY_PROVEEDOR prov ON i.id_proveedor = prov.id_proveedor
-            WHERE i.stock_actual <= i.stock_min
-            ORDER BY deficit DESC;
-    END CA_EA_ST_IY_SP_REPORTE_STOCK_CRITICO;
+-- Procesos de negocio
+CREATE OR REPLACE PROCEDURE CA_EA_ST_IY_SP_GESTION_RECEPCION(p_id_cuartel IN NUMBER, p_id_personal IN NUMBER, p_kilos IN NUMBER, p_id_contenedor IN NUMBER) IS
+    v_id_cosecha NUMBER;
+    v_litros NUMBER;
+BEGIN
+    LOCK TABLE CA_EA_ST_IY_RECEPCION_COSECHA IN ROW EXCLUSIVE MODE;
+    LOCK TABLE CA_EA_ST_IY_LOTE IN ROW EXCLUSIVE MODE;
 
-    PROCEDURE CA_EA_ST_IY_SP_REPORTE_OCUPACION_BODEGA(p_cursor OUT SYS_REFCURSOR) IS
-    BEGIN
-        OPEN p_cursor FOR 
-            SELECT c.id_contenedor, c.material, c.capacidad, 
-                   c.nro_usos, 
-                   NVL(l.litros_actuales, 0) as ocupacion,
-                   CASE WHEN l.id_lote IS NOT NULL THEN 'OCUPADO' ELSE 'LIBRE' END as estado
-            FROM CA_EA_ST_IY_CONTENEDORES c
-            LEFT JOIN CA_EA_ST_IY_LOTE l ON c.id_contenedor = l.id_contenedor;
-    END CA_EA_ST_IY_SP_REPORTE_OCUPACION_BODEGA;
+    v_litros := CA_EA_ST_IY_FN_CALCULAR_LITROS(p_kilos);
+    INSERT INTO CA_EA_ST_IY_RECEPCION_COSECHA (id_cuartel, id_personal, kilos) VALUES (p_id_cuartel, p_id_personal, p_kilos)
+    RETURNING id_cosecha INTO v_id_cosecha;
+    INSERT INTO CA_EA_ST_IY_LOTE (id_cosecha, litros_actuales, estado, ubicacion, id_contenedor)
+    VALUES (v_id_cosecha, v_litros, 'Fermentacion', 'Bodega Central', p_id_contenedor);
+    COMMIT;
+EXCEPTION WHEN OTHERS THEN ROLLBACK; RAISE;
+END CA_EA_ST_IY_SP_GESTION_RECEPCION;
+/
 
-    -- Procesos de negocio
-    PROCEDURE CA_EA_ST_IY_SP_GESTION_RECEPCION(p_id_cuartel IN NUMBER, p_id_personal IN NUMBER, p_kilos IN NUMBER, p_id_contenedor IN NUMBER) IS
-        v_id_cosecha NUMBER;
-        v_litros NUMBER;
-    BEGIN
-        v_litros := CA_EA_ST_IY_FN_CALCULAR_LITROS(p_kilos);
-        INSERT INTO CA_EA_ST_IY_RECEPCION_COSECHA (id_cuartel, id_personal, kilos) VALUES (p_id_cuartel, p_id_personal, p_kilos)
-        RETURNING id_cosecha INTO v_id_cosecha;
-        INSERT INTO CA_EA_ST_IY_LOTE (id_cosecha, litros_actuales, estado, ubicacion, id_contenedor)
-        VALUES (v_id_cosecha, v_litros, 'Fermentacion', 'Bodega Central', p_id_contenedor);
-        COMMIT;
-    EXCEPTION WHEN OTHERS THEN ROLLBACK; RAISE;
-    END CA_EA_ST_IY_SP_GESTION_RECEPCION;
+CREATE OR REPLACE PROCEDURE CA_EA_ST_IY_SP_GESTION_TRASVASIJADO(p_id_lote IN NUMBER, p_nuevo_contenedor IN NUMBER) IS
+BEGIN
+    LOCK TABLE CA_EA_ST_IY_LOTE IN ROW EXCLUSIVE MODE;
+    UPDATE CA_EA_ST_IY_LOTE SET id_contenedor = p_nuevo_contenedor, ubicacion = 'Bodega Barricas' WHERE id_lote = p_id_lote;
+    COMMIT;
+EXCEPTION WHEN OTHERS THEN ROLLBACK; RAISE;
+END CA_EA_ST_IY_SP_GESTION_TRASVASIJADO;
+/
 
-    PROCEDURE CA_EA_ST_IY_SP_GESTION_TRASVASIJADO(p_id_lote IN NUMBER, p_nuevo_contenedor IN NUMBER) IS
-    BEGIN
-        UPDATE CA_EA_ST_IY_LOTE SET id_contenedor = p_nuevo_contenedor, ubicacion = 'Bodega Barricas' WHERE id_lote = p_id_lote;
-        COMMIT;
-    END CA_EA_ST_IY_SP_GESTION_TRASVASIJADO;
+CREATE OR REPLACE PROCEDURE CA_EA_ST_IY_SP_GESTION_APLICAR_INSUMO(p_id_lote IN NUMBER, p_id_insumo IN NUMBER, p_id_personal IN NUMBER, p_cantidad IN NUMBER, p_motivo IN VARCHAR2) IS
+BEGIN
+    LOCK TABLE CA_EA_ST_IY_INSUMOS IN ROW EXCLUSIVE MODE;
+    LOCK TABLE CA_EA_ST_IY_APLICACION_INSUMOS IN ROW EXCLUSIVE MODE;
+    UPDATE CA_EA_ST_IY_INSUMOS SET stock_actual = stock_actual - p_cantidad WHERE id_insumo = p_id_insumo;
+    INSERT INTO CA_EA_ST_IY_APLICACION_INSUMOS (id_lote, id_insumo, id_personal, cantidad_usada, motivo_uso)
+    VALUES (p_id_lote, p_id_insumo, p_id_personal, p_cantidad, p_motivo);
+    COMMIT;
+EXCEPTION WHEN OTHERS THEN ROLLBACK; RAISE;
+END CA_EA_ST_IY_SP_GESTION_APLICAR_INSUMO;
+/
 
-    PROCEDURE CA_EA_ST_IY_SP_GESTION_APLICAR_INSUMO(p_id_lote IN NUMBER, p_id_insumo IN NUMBER, p_id_personal IN NUMBER, p_cantidad IN NUMBER, p_motivo IN VARCHAR2) IS
-    BEGIN
-        UPDATE CA_EA_ST_IY_INSUMOS SET stock_actual = stock_actual - p_cantidad WHERE id_insumo = p_id_insumo;
-        INSERT INTO CA_EA_ST_IY_APLICACION_INSUMOS (id_lote, id_insumo, id_personal, cantidad_usada, motivo_uso)
-        VALUES (p_id_lote, p_id_insumo, p_id_personal, p_cantidad, p_motivo);
-        COMMIT;
-    EXCEPTION WHEN OTHERS THEN ROLLBACK; RAISE;
-    END CA_EA_ST_IY_SP_GESTION_APLICAR_INSUMO;
+CREATE OR REPLACE PROCEDURE CA_EA_ST_IY_SP_GESTION_CREAR_PEDIDO(p_rut_cliente IN VARCHAR2, p_id_producto IN NUMBER, p_cantidad IN NUMBER) IS
+    v_id_cliente NUMBER;
+    v_id_pedido NUMBER;
+BEGIN
+    LOCK TABLE CA_EA_ST_IY_PEDIDO_VENTA IN ROW EXCLUSIVE MODE;
+    LOCK TABLE CA_EA_ST_IY_DETALLE_PEDIDO_VENTA IN ROW EXCLUSIVE MODE;
+    SELECT id_cliente INTO v_id_cliente FROM CA_EA_ST_IY_CLIENTE WHERE rut_cliente = p_rut_cliente;
+    INSERT INTO CA_EA_ST_IY_PEDIDO_VENTA (id_cliente, estado_pedido) VALUES (v_id_cliente, 'Pendiente') RETURNING id_pedido INTO v_id_pedido;
+    INSERT INTO CA_EA_ST_IY_DETALLE_PEDIDO_VENTA (id_pedido, id_producto, cantidad) VALUES (v_id_pedido, p_id_producto, p_cantidad);
+    COMMIT;
+EXCEPTION WHEN NO_DATA_FOUND THEN 
+    ROLLBACK;
+    RAISE_APPLICATION_ERROR(-20010, 'Cliente no existe');
+WHEN OTHERS THEN ROLLBACK; RAISE;
+END CA_EA_ST_IY_SP_GESTION_CREAR_PEDIDO;
+/
 
-    PROCEDURE CA_EA_ST_IY_SP_GESTION_CREAR_PEDIDO(p_rut_cliente IN VARCHAR2, p_id_producto IN NUMBER, p_cantidad IN NUMBER) IS
-        v_id_cliente NUMBER;
-        v_id_pedido NUMBER;
-    BEGIN
-        SELECT id_cliente INTO v_id_cliente FROM CA_EA_ST_IY_CLIENTE WHERE rut_cliente = p_rut_cliente;
-        INSERT INTO CA_EA_ST_IY_PEDIDO_VENTA (id_cliente, estado_pedido) VALUES (v_id_cliente, 'Pendiente') RETURNING id_pedido INTO v_id_pedido;
-        INSERT INTO CA_EA_ST_IY_DETALLE_PEDIDO_VENTA (id_pedido, id_producto, cantidad) VALUES (v_id_pedido, p_id_producto, p_cantidad);
-        COMMIT;
-    EXCEPTION WHEN NO_DATA_FOUND THEN 
-        RAISE_APPLICATION_ERROR(-20010, 'Cliente no existe');
+CREATE OR REPLACE PROCEDURE CA_EA_ST_IY_SP_GESTION_EMBOTELLADO(p_id_lote IN NUMBER, p_id_producto IN NUMBER, p_cantidad_botellas IN NUMBER) IS
+BEGIN
+    LOCK TABLE CA_EA_ST_IY_LOTE IN ROW EXCLUSIVE MODE;
+    LOCK TABLE CA_EA_ST_IY_PRODUCTOS IN ROW EXCLUSIVE MODE;
+    LOCK TABLE CA_EA_ST_IY_EMBOTELLADO IN ROW EXCLUSIVE MODE;
+    UPDATE CA_EA_ST_IY_LOTE SET litros_actuales = litros_actuales - (p_cantidad_botellas * 0.75) WHERE id_lote = p_id_lote;
+    UPDATE CA_EA_ST_IY_PRODUCTOS SET stock = stock + p_cantidad_botellas WHERE id_producto = p_id_producto;
+    INSERT INTO CA_EA_ST_IY_EMBOTELLADO (id_producto, cantidad_producida, id_lote, litros_usados)
+    VALUES (p_id_producto, p_cantidad_botellas, p_id_lote, (p_cantidad_botellas * 0.75));
+    COMMIT;
+EXCEPTION WHEN OTHERS THEN ROLLBACK; RAISE;
+END CA_EA_ST_IY_SP_GESTION_EMBOTELLADO;
+/
+
+-- Procedimientos CRUD y login
+CREATE OR REPLACE PROCEDURE CA_EA_ST_IY_SP_LOGIN(p_email IN VARCHAR2, p_pass IN VARCHAR2, p_cursor OUT SYS_REFCURSOR) IS
+BEGIN
+    OPEN p_cursor FOR SELECT id_usuario, nombre, id_perfil FROM CA_EA_ST_IY_USUARIOS WHERE email = p_email AND password = p_pass;
+END CA_EA_ST_IY_SP_LOGIN;
+/
+
+CREATE OR REPLACE PROCEDURE CA_EA_ST_IY_SP_CRUD_CREAR_CONTENEDOR(p_material IN VARCHAR2, p_capacidad IN NUMBER) IS
+BEGIN
+    LOCK TABLE CA_EA_ST_IY_CONTENEDORES IN ROW EXCLUSIVE MODE;
+    INSERT INTO CA_EA_ST_IY_CONTENEDORES (material, capacidad) VALUES (p_material, p_capacidad);
+    COMMIT;
+EXCEPTION WHEN OTHERS THEN ROLLBACK; RAISE;
+END CA_EA_ST_IY_SP_CRUD_CREAR_CONTENEDOR;
+/
+
+CREATE OR REPLACE PROCEDURE CA_EA_ST_IY_SP_CRUD_ACTUALIZAR_CONTENEDOR(
+    p_id IN NUMBER, 
+    p_material IN VARCHAR2, 
+    p_capacidad IN NUMBER, 
+    p_usos IN NUMBER
+) IS
+BEGIN
+    LOCK TABLE CA_EA_ST_IY_CONTENEDORES IN ROW EXCLUSIVE MODE;
+    UPDATE CA_EA_ST_IY_CONTENEDORES 
+    SET 
+        material = p_material, 
+        capacidad = p_capacidad, 
+        nro_usos = p_usos
+    WHERE ID_CONTENEDOR = p_id; 
+    COMMIT;
+EXCEPTION 
     WHEN OTHERS THEN ROLLBACK; RAISE;
-    END CA_EA_ST_IY_SP_GESTION_CREAR_PEDIDO;
+END CA_EA_ST_IY_SP_CRUD_ACTUALIZAR_CONTENEDOR;
+/
 
-    PROCEDURE CA_EA_ST_IY_SP_GESTION_EMBOTELLADO(p_id_lote IN NUMBER, p_id_producto IN NUMBER, p_cantidad_botellas IN NUMBER) IS
-    BEGIN
-        UPDATE CA_EA_ST_IY_LOTE SET litros_actuales = litros_actuales - (p_cantidad_botellas * 0.75) WHERE id_lote = p_id_lote;
-        UPDATE CA_EA_ST_IY_PRODUCTOS SET stock = stock + p_cantidad_botellas WHERE id_producto = p_id_producto;
-        INSERT INTO CA_EA_ST_IY_EMBOTELLADO (id_producto, cantidad_producida, id_lote, litros_usados)
-        VALUES (p_id_producto, p_cantidad_botellas, p_id_lote, (p_cantidad_botellas * 0.75));
-        COMMIT;
-    EXCEPTION WHEN OTHERS THEN ROLLBACK; RAISE;
-    END CA_EA_ST_IY_SP_GESTION_EMBOTELLADO;
+CREATE OR REPLACE PROCEDURE CA_EA_ST_IY_SP_CRUD_ELIMINAR_CONTENEDOR(p_id IN NUMBER) IS
+BEGIN
+    LOCK TABLE CA_EA_ST_IY_CONTENEDORES IN ROW EXCLUSIVE MODE;
+    DELETE FROM CA_EA_ST_IY_CONTENEDORES WHERE id_contenedor = p_id; 
+    COMMIT;
+EXCEPTION 
+    WHEN OTHERS THEN ROLLBACK; RAISE;
+END CA_EA_ST_IY_SP_CRUD_ELIMINAR_CONTENEDOR;
+/
 
-    -- Procedimientos CRUD
-    PROCEDURE CA_EA_ST_IY_SP_LOGIN(p_email IN VARCHAR2, p_pass IN VARCHAR2, p_cursor OUT SYS_REFCURSOR) IS
-    BEGIN
-        OPEN p_cursor FOR SELECT id_usuario, nombre, id_perfil FROM CA_EA_ST_IY_USUARIOS WHERE email = p_email AND password = p_pass;
-    END CA_EA_ST_IY_SP_LOGIN;
+CREATE OR REPLACE PROCEDURE CA_EA_ST_IY_SP_CRUD_CREAR_INSUMO(p_prov IN NUMBER, p_nom IN VARCHAR2, p_min IN NUMBER, p_uni IN VARCHAR2) IS
+BEGIN
+    LOCK TABLE CA_EA_ST_IY_INSUMOS IN ROW EXCLUSIVE MODE;
+    INSERT INTO CA_EA_ST_IY_INSUMOS (id_proveedor, nombre_insumo, stock_min, unidad_medida) VALUES (p_prov, p_nom, p_min, p_uni);
+    COMMIT;
+EXCEPTION WHEN OTHERS THEN ROLLBACK; RAISE;
+END CA_EA_ST_IY_SP_CRUD_CREAR_INSUMO;
+/
 
-    PROCEDURE CA_EA_ST_IY_SP_CRUD_CREAR_CONTENEDOR(p_material IN VARCHAR2, p_capacidad IN NUMBER) IS
-    BEGIN
-        INSERT INTO CA_EA_ST_IY_CONTENEDORES (material, capacidad) VALUES (p_material, p_capacidad); COMMIT;
-    END CA_EA_ST_IY_SP_CRUD_CREAR_CONTENEDOR;
-    
-    PROCEDURE CA_EA_ST_IY_SP_CRUD_ACTUALIZAR_CONTENEDOR(
-        p_id IN NUMBER, 
-        p_material IN VARCHAR2, 
-        p_capacidad IN NUMBER, 
-        p_usos IN NUMBER
-    ) IS
-    BEGIN
-        UPDATE CA_EA_ST_IY_CONTENEDORES 
-        SET 
-            material = p_material, 
-            capacidad = p_capacidad, 
-            nro_usos = p_usos
-        WHERE ID_CONTENEDOR = p_id; 
-        COMMIT;
-    EXCEPTION 
-        WHEN OTHERS THEN ROLLBACK; RAISE;
-    END CA_EA_ST_IY_SP_CRUD_ACTUALIZAR_CONTENEDOR;
-    
-    PROCEDURE CA_EA_ST_IY_SP_CRUD_ELIMINAR_CONTENEDOR(p_id IN NUMBER) IS
-    BEGIN
-        DELETE FROM CA_EA_ST_IY_CONTENEDORES WHERE id_contenedor = p_id; 
-        COMMIT;
-    EXCEPTION 
-        WHEN OTHERS THEN ROLLBACK; RAISE;
-    END CA_EA_ST_IY_SP_CRUD_ELIMINAR_CONTENEDOR;
+CREATE OR REPLACE PROCEDURE CA_EA_ST_IY_SP_CRUD_UPDATE_STOCK(p_id IN NUMBER, p_cant IN NUMBER) IS
+BEGIN
+    LOCK TABLE CA_EA_ST_IY_INSUMOS IN ROW EXCLUSIVE MODE;
+    UPDATE CA_EA_ST_IY_INSUMOS SET stock_actual = stock_actual + p_cant WHERE id_insumo = p_id;
+    COMMIT;
+EXCEPTION WHEN OTHERS THEN ROLLBACK; RAISE;
+END CA_EA_ST_IY_SP_CRUD_UPDATE_STOCK;
+/
 
-    PROCEDURE CA_EA_ST_IY_SP_CRUD_CREAR_INSUMO(p_prov IN NUMBER, p_nom IN VARCHAR2, p_min IN NUMBER, p_uni IN VARCHAR2) IS
-    BEGIN
-        INSERT INTO CA_EA_ST_IY_INSUMOS (id_proveedor, nombre_insumo, stock_min, unidad_medida) VALUES (p_prov, p_nom, p_min, p_uni); COMMIT;
-    END CA_EA_ST_IY_SP_CRUD_CREAR_INSUMO;
+CREATE OR REPLACE PROCEDURE CA_EA_ST_IY_SP_CRUD_DEL_INSUMO(p_id IN NUMBER) IS
+BEGIN
+    LOCK TABLE CA_EA_ST_IY_INSUMOS IN ROW EXCLUSIVE MODE;
+    DELETE FROM CA_EA_ST_IY_INSUMOS WHERE id_insumo = p_id;
+    COMMIT;
+EXCEPTION WHEN OTHERS THEN ROLLBACK; RAISE;
+END CA_EA_ST_IY_SP_CRUD_DEL_INSUMO;
+/
 
-    PROCEDURE CA_EA_ST_IY_SP_CRUD_UPDATE_STOCK(p_id IN NUMBER, p_cant IN NUMBER) IS
-    BEGIN
-        UPDATE CA_EA_ST_IY_INSUMOS SET stock_actual = stock_actual + p_cant WHERE id_insumo = p_id; COMMIT;
-    END CA_EA_ST_IY_SP_CRUD_UPDATE_STOCK;
+CREATE OR REPLACE PROCEDURE CA_EA_ST_IY_SP_CRUD_CREAR_PERSONAL(p_rut IN VARCHAR2, p_nom IN VARCHAR2, p_ape IN VARCHAR2, p_cargo IN NUMBER) IS
+BEGIN
+    LOCK TABLE CA_EA_ST_IY_PERSONAL IN ROW EXCLUSIVE MODE;
+    INSERT INTO CA_EA_ST_IY_PERSONAL (rut, nombre, apellido1, id_cargo) VALUES (p_rut, p_nom, p_ape, p_cargo);
+    COMMIT;
+EXCEPTION WHEN OTHERS THEN ROLLBACK; RAISE;
+END CA_EA_ST_IY_SP_CRUD_CREAR_PERSONAL;
+/
 
-    PROCEDURE CA_EA_ST_IY_SP_CRUD_DEL_INSUMO(p_id IN NUMBER) IS
-    BEGIN
-        DELETE FROM CA_EA_ST_IY_INSUMOS WHERE id_insumo = p_id; COMMIT;
-    END CA_EA_ST_IY_SP_CRUD_DEL_INSUMO;
+CREATE OR REPLACE PROCEDURE CA_EA_ST_IY_SP_CRUD_DEL_PERSONAL(p_id IN NUMBER) IS
+BEGIN
+    LOCK TABLE CA_EA_ST_IY_PERSONAL IN ROW EXCLUSIVE MODE;
+    DELETE FROM CA_EA_ST_IY_PERSONAL WHERE id_personal = p_id;
+    COMMIT;
+EXCEPTION WHEN OTHERS THEN ROLLBACK; RAISE;
+END CA_EA_ST_IY_SP_CRUD_DEL_PERSONAL;
+/
 
-    PROCEDURE CA_EA_ST_IY_SP_CRUD_CREAR_PERSONAL(p_rut IN VARCHAR2, p_nom IN VARCHAR2, p_ape IN VARCHAR2, p_cargo IN NUMBER) IS
-    BEGIN
-        INSERT INTO CA_EA_ST_IY_PERSONAL (rut, nombre, apellido1, id_cargo) VALUES (p_rut, p_nom, p_ape, p_cargo); COMMIT;
-    END CA_EA_ST_IY_SP_CRUD_CREAR_PERSONAL;
+CREATE OR REPLACE PROCEDURE CA_EA_ST_IY_SP_CRUD_CREAR_CLIENTE(p_rut IN VARCHAR2, p_razon IN VARCHAR2, p_dir IN VARCHAR2) IS
+BEGIN
+    LOCK TABLE CA_EA_ST_IY_CLIENTE IN ROW EXCLUSIVE MODE;
+    INSERT INTO CA_EA_ST_IY_CLIENTE (rut_cliente, razon_social, direccion) VALUES (p_rut, p_razon, p_dir);
+    COMMIT;
+EXCEPTION WHEN OTHERS THEN ROLLBACK; RAISE;
+END CA_EA_ST_IY_SP_CRUD_CREAR_CLIENTE;
+/
 
-    PROCEDURE CA_EA_ST_IY_SP_CRUD_DEL_PERSONAL(p_id IN NUMBER) IS
-    BEGIN
-        DELETE FROM CA_EA_ST_IY_PERSONAL WHERE id_personal = p_id; COMMIT;
-    END CA_EA_ST_IY_SP_CRUD_DEL_PERSONAL;
+CREATE OR REPLACE PROCEDURE CA_EA_ST_IY_SP_CRUD_UPDATE_CLIENTE(p_id IN NUMBER, p_dir IN VARCHAR2) IS
+BEGIN
+    LOCK TABLE CA_EA_ST_IY_CLIENTE IN ROW EXCLUSIVE MODE;
+    UPDATE CA_EA_ST_IY_CLIENTE SET direccion = p_dir WHERE id_cliente = p_id;
+    COMMIT;
+EXCEPTION WHEN OTHERS THEN ROLLBACK; RAISE;
+END CA_EA_ST_IY_SP_CRUD_UPDATE_CLIENTE;
+/
 
-    PROCEDURE CA_EA_ST_IY_SP_CRUD_CREAR_CLIENTE(p_rut IN VARCHAR2, p_razon IN VARCHAR2, p_dir IN VARCHAR2) IS
-    BEGIN
-        INSERT INTO CA_EA_ST_IY_CLIENTE (rut_cliente, razon_social, direccion) VALUES (p_rut, p_razon, p_dir); COMMIT;
-    END CA_EA_ST_IY_SP_CRUD_CREAR_CLIENTE;
-
-    PROCEDURE CA_EA_ST_IY_SP_CRUD_UPDATE_CLIENTE(p_id IN NUMBER, p_dir IN VARCHAR2) IS
-    BEGIN
-        UPDATE CA_EA_ST_IY_CLIENTE SET direccion = p_dir WHERE id_cliente = p_id; COMMIT;
-    END CA_EA_ST_IY_SP_CRUD_UPDATE_CLIENTE;
-    
-    PROCEDURE CA_EA_ST_IY_SP_CRUD_CREAR_PRODUCTO(p_nombre IN VARCHAR2, p_precio IN NUMBER) IS
-    BEGIN
-        INSERT INTO CA_EA_ST_IY_PRODUCTOS (nombre_prod, precio) VALUES (p_nombre, p_precio); COMMIT;
-    END CA_EA_ST_IY_SP_CRUD_CREAR_PRODUCTO;
-
-END CA_EA_ST_IY_PKG_VINA;
+CREATE OR REPLACE PROCEDURE CA_EA_ST_IY_SP_CRUD_CREAR_PRODUCTO(p_nombre IN VARCHAR2, p_precio IN NUMBER) IS
+BEGIN
+    LOCK TABLE CA_EA_ST_IY_PRODUCTOS IN ROW EXCLUSIVE MODE;
+    INSERT INTO CA_EA_ST_IY_PRODUCTOS (nombre_prod, precio) VALUES (p_nombre, p_precio);
+    COMMIT;
+EXCEPTION WHEN OTHERS THEN ROLLBACK; RAISE;
+END CA_EA_ST_IY_SP_CRUD_CREAR_PRODUCTO;
 /
 
 -- 5. Carga de datos iniciales

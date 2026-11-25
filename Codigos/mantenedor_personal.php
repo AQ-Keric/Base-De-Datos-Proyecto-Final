@@ -32,7 +32,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $apellido = $_POST['apellido']; 
         $id_cargo = filter_input(INPUT_POST, 'id_cargo', FILTER_VALIDATE_INT);
         
-        $sql = 'BEGIN CA_EA_ST_IY_PKG_VINA.CA_EA_ST_IY_SP_CRUD_CREAR_PERSONAL(:p_rut, :p_nom, :p_ape, :p_cargo); END;';
+        $sql = 'BEGIN CA_EA_ST_IY_SP_CRUD_CREAR_PERSONAL(:p_rut, :p_nom, :p_ape, :p_cargo); END;';
         $stmt = oci_parse($conn, $sql);
         
         oci_bind_by_name($stmt, ':p_rut', $rut);
@@ -55,7 +55,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($accion === 'eliminar') {
         $id_personal = filter_input(INPUT_POST, 'id_personal_eliminar', FILTER_VALIDATE_INT);
         
-        $sql = 'BEGIN CA_EA_ST_IY_PKG_VINA.CA_EA_ST_IY_SP_CRUD_DEL_PERSONAL(:p_id); END;';
+        $sql = 'BEGIN CA_EA_ST_IY_SP_CRUD_DEL_PERSONAL(:p_id); END;';
         $stmt = oci_parse($conn, $sql);
         oci_bind_by_name($stmt, ':p_id', $id_personal);
         

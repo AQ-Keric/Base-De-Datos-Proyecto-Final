@@ -23,7 +23,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $error_ocurrido = true;
         $mensaje = "Error: Debe seleccionar un cliente, un producto y una cantidad valida mayor a 0.";
     } else {
-        $sql = 'BEGIN CA_EA_ST_IY_PKG_VINA.CA_EA_ST_IY_SP_GESTION_CREAR_PEDIDO(:p_rut, :p_producto, :p_cant); END;';
+        $sql = 'BEGIN CA_EA_ST_IY_SP_GESTION_CREAR_PEDIDO(:p_rut, :p_producto, :p_cant); END;';
         $stmt = oci_parse($conn, $sql);
 
         oci_bind_by_name($stmt, ':p_rut', $rut_cliente);

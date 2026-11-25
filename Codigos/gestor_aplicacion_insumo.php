@@ -25,7 +25,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $error_ocurrido = true;
         $mensaje = "Error: Todos los campos son obligatorios y la cantidad debe ser mayor a 0.";
     } else {
-        $sql = 'BEGIN CA_EA_ST_IY_PKG_VINA.CA_EA_ST_IY_SP_GESTION_APLICAR_INSUMO(:p_lote, :p_insumo, :p_personal, :p_cantidad, :p_motivo); END;';
+        $sql = 'BEGIN CA_EA_ST_IY_SP_GESTION_APLICAR_INSUMO(:p_lote, :p_insumo, :p_personal, :p_cantidad, :p_motivo); END;';
         $stmt = oci_parse($conn, $sql);
         
         oci_bind_by_name($stmt, ':p_lote', $id_lote);

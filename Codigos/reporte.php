@@ -10,7 +10,7 @@ require 'db.php';
 function ejecutar_reporte_cursor($conn, $sp_name) {
     $data = [];
     $cursor = oci_new_cursor($conn);
-    $sql = 'BEGIN CA_EA_ST_IY_PKG_VINA.' . $sp_name . '(:cursor); END;'; 
+    $sql = 'BEGIN ' . $sp_name . '(:cursor); END;'; 
     $stmt = oci_parse($conn, $sql);
     
     oci_bind_by_name($stmt, ':cursor', $cursor, -1, OCI_B_CURSOR);

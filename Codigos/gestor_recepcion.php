@@ -24,7 +24,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $error_ocurrido = true;
         $mensaje = "Error: Datos incompletos. Asegurese de seleccionar Cuartel, Personal, Kilos (> 0) y Contenedor.";
     } else {
-        $sql = 'BEGIN CA_EA_ST_IY_PKG_VINA.CA_EA_ST_IY_SP_GESTION_RECEPCION(:p_id_cuartel, :p_id_personal, :p_kilos, :p_id_contenedor); END;';
+        $sql = 'BEGIN CA_EA_ST_IY_SP_GESTION_RECEPCION(:p_id_cuartel, :p_id_personal, :p_kilos, :p_id_contenedor); END;';
         $stmt = oci_parse($conn, $sql);
         
         oci_bind_by_name($stmt, ':p_id_cuartel', $id_cuartel);
@@ -70,7 +70,7 @@ while ($row = oci_fetch_assoc($stmt_personal)) {
 oci_free_statement($stmt_personal);
 
 $cursor_cont = oci_new_cursor($conn);
-$sql_cont = 'BEGIN CA_EA_ST_IY_PKG_VINA.CA_EA_ST_IY_SP_REPORTE_OCUPACION_BODEGA(:cursor); END;'; 
+$sql_cont = 'BEGIN CA_EA_ST_IY_SP_REPORTE_OCUPACION_BODEGA(:cursor); END;'; 
 $stmt_cont = oci_parse($conn, $sql_cont);
 oci_bind_by_name($stmt_cont, ':cursor', $cursor_cont, -1, OCI_B_CURSOR);
 @oci_execute($stmt_cont);

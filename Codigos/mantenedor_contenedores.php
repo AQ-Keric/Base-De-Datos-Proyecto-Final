@@ -22,7 +22,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $error_ocurrido = true;
             $mensaje = "Error: Material y Capacidad (debe ser > 0) son obligatorios.";
         } else {
-            $sql = 'BEGIN CA_EA_ST_IY_PKG_VINA.CA_EA_ST_IY_SP_CRUD_CREAR_CONTENEDOR(:p_mat, :p_cap); END;';
+            $sql = 'BEGIN CA_EA_ST_IY_SP_CRUD_CREAR_CONTENEDOR(:p_mat, :p_cap); END;';
             $stmt = oci_parse($conn, $sql);
             
             oci_bind_by_name($stmt, ':p_mat', $material);
@@ -50,7 +50,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $error_ocurrido = true;
             $mensaje = "Error: Datos de actualizacion invalidos o incompletos.";
         } else {
-            $sql = 'BEGIN CA_EA_ST_IY_PKG_VINA.CA_EA_ST_IY_SP_CRUD_ACTUALIZAR_CONTENEDOR(:p_id, :p_mat, :p_cap, :p_usos); END;';
+            $sql = 'BEGIN CA_EA_ST_IY_SP_CRUD_ACTUALIZAR_CONTENEDOR(:p_id, :p_mat, :p_cap, :p_usos); END;';
             $stmt = oci_parse($conn, $sql);
             
             oci_bind_by_name($stmt, ':p_id', $id_contenedor);
@@ -77,7 +77,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $error_ocurrido = true;
             $mensaje = "Error: ID de contenedor invalido.";
         } else {
-            $sql = 'BEGIN CA_EA_ST_IY_PKG_VINA.CA_EA_ST_IY_SP_CRUD_ELIMINAR_CONTENEDOR(:p_id); END;';
+            $sql = 'BEGIN CA_EA_ST_IY_SP_CRUD_ELIMINAR_CONTENEDOR(:p_id); END;';
             $stmt = oci_parse($conn, $sql);
             oci_bind_by_name($stmt, ':p_id', $id_contenedor);
 
@@ -109,7 +109,7 @@ if (isset($_GET['mensaje'])) {
 }
 
 $cursor = oci_new_cursor($conn);
-$sql_list = 'BEGIN CA_EA_ST_IY_PKG_VINA.CA_EA_ST_IY_SP_REPORTE_OCUPACION_BODEGA(:cursor); END;'; 
+$sql_list = 'BEGIN CA_EA_ST_IY_SP_REPORTE_OCUPACION_BODEGA(:cursor); END;'; 
 $stmt_list = oci_parse($conn, $sql_list);
 oci_bind_by_name($stmt_list, ':cursor', $cursor, -1, OCI_B_CURSOR);
 @oci_execute($stmt_list);

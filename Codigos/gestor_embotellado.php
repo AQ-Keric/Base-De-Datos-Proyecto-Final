@@ -24,7 +24,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $error_ocurrido = true;
         $mensaje = "Error: Lote, Producto y Cantidad de Botellas (> 0) son obligatorios.";
     } else {
-        $sql = 'BEGIN CA_EA_ST_IY_PKG_VINA.CA_EA_ST_IY_SP_GESTION_EMBOTELLADO(:p_lote, :p_producto, :p_cant); END;';
+        $sql = 'BEGIN CA_EA_ST_IY_SP_GESTION_EMBOTELLADO(:p_lote, :p_producto, :p_cant); END;';
         $stmt = oci_parse($conn, $sql);
         
         oci_bind_by_name($stmt, ':p_lote', $id_lote);

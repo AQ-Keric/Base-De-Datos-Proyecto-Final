@@ -30,7 +30,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stock_min = filter_input(INPUT_POST, 'stock_min', FILTER_VALIDATE_INT);
         $unidad_medida = $_POST['unidad_medida'];
         
-        $sql = 'BEGIN CA_EA_ST_IY_PKG_VINA.CA_EA_ST_IY_SP_CRUD_CREAR_INSUMO(:p_prov, :p_nom, :p_min, :p_uni); END;';
+        $sql = 'BEGIN CA_EA_ST_IY_SP_CRUD_CREAR_INSUMO(:p_prov, :p_nom, :p_min, :p_uni); END;';
         $stmt = oci_parse($conn, $sql);
         
         oci_bind_by_name($stmt, ':p_prov', $id_proveedor);
@@ -54,7 +54,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $id_insumo = filter_input(INPUT_POST, 'edit_id_insumo', FILTER_VALIDATE_INT);
         $cantidad = filter_input(INPUT_POST, 'cantidad_movimiento', FILTER_VALIDATE_INT);
 
-        $sql = 'BEGIN CA_EA_ST_IY_PKG_VINA.CA_EA_ST_IY_SP_CRUD_UPDATE_STOCK(:p_id, :p_cant); END;';
+        $sql = 'BEGIN CA_EA_ST_IY_SP_CRUD_UPDATE_STOCK(:p_id, :p_cant); END;';
         $stmt = oci_parse($conn, $sql);
         
         oci_bind_by_name($stmt, ':p_id', $id_insumo);
@@ -75,7 +75,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($accion === 'eliminar') {
         $id_insumo = filter_input(INPUT_POST, 'id_insumo_eliminar', FILTER_VALIDATE_INT);
         
-        $sql = 'BEGIN CA_EA_ST_IY_PKG_VINA.CA_EA_ST_IY_SP_CRUD_DEL_INSUMO(:p_id); END;';
+        $sql = 'BEGIN CA_EA_ST_IY_SP_CRUD_DEL_INSUMO(:p_id); END;';
         $stmt = oci_parse($conn, $sql);
         oci_bind_by_name($stmt, ':p_id', $id_insumo);
         
