@@ -55,30 +55,8 @@ if (isset($_GET['mensaje'])) {
 }
 
 // Cargar lotes y productos
-$sql_lotes_aptos = "SELECT l.id_lote, l.litros_actuales, v.nombre_variedad, l.estado
-              FROM CA_EA_ST_IY_LOTE l
-              JOIN CA_EA_ST_IY_RECEPCION_COSECHA rc ON l.id_cosecha = rc.id_cosecha
-              JOIN CA_EA_ST_IY_CUARTEL cu ON rc.id_cuartel = cu.id_cuartel
-              JOIN CA_EA_ST_IY_VARIEDAD_UVA v ON cu.id_variedad = v.id_variedad
-              WHERE UPPER(l.estado) IN ('CRIANZA', 'FINALIZADO') AND l.litros_actuales >= 0.75
-              ORDER BY l.id_lote DESC";
-$stmt_lotes = oci_parse($conn, $sql_lotes_aptos);
-@oci_execute($stmt_lotes);
-while ($row = oci_fetch_assoc($stmt_lotes)) {
-    $lotes_aptos[] = $row;
-}
-oci_free_statement($stmt_lotes);
-
-$sql_productos = "SELECT id_producto, nombre_prod, precio 
-                FROM CA_EA_ST_IY_PRODUCTOS 
-                ORDER BY nombre_prod";
-$stmt_productos = oci_parse($conn, $sql_productos);
-@oci_execute($stmt_productos);
-while ($row = oci_fetch_assoc($stmt_productos)) {
-    $productos[] = $row;
-}
-oci_free_statement($stmt_productos);
-
+$lotes_aptos = consultar_cursor($conn, 'CA_EA_ST_IY_SP_LISTAR_LOTES_EMBOTELLADO');
+$productos = consultar_cursor($conn, 'CA_EA_ST_IY_SP_CRUD_LISTAR_PRODUCTOS');
 ?>
 <!DOCTYPE html>
 <html lang="es">

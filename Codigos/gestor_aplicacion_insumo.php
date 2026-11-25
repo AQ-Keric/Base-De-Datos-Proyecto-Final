@@ -58,39 +58,9 @@ if (isset($_GET['mensaje'])) {
 }
 
 // Cargar datos
-$sql_lotes = "SELECT l.id_lote, l.litros_actuales, l.estado, v.nombre_variedad, 
-                     cont.material || ' (' || cont.capacidad || 'L)' AS contenedor_info
-              FROM CA_EA_ST_IY_LOTE l
-              JOIN CA_EA_ST_IY_RECEPCION_COSECHA rc ON l.id_cosecha = rc.id_cosecha
-              JOIN CA_EA_ST_IY_CUARTEL cu ON rc.id_cuartel = cu.id_cuartel
-              JOIN CA_EA_ST_IY_VARIEDAD_UVA v ON cu.id_variedad = v.id_variedad
-              LEFT JOIN CA_EA_ST_IY_CONTENEDORES cont ON l.id_contenedor = cont.id_contenedor
-              WHERE UPPER(l.estado) != 'FINALIZADO'
-              ORDER BY l.id_lote DESC";
-$stmt_lotes = oci_parse($conn, $sql_lotes);
-@oci_execute($stmt_lotes);
-while ($row = oci_fetch_assoc($stmt_lotes)) {
-    $lotes[] = $row;
-}
-oci_free_statement($stmt_lotes);
-
-$sql_insumos = "SELECT id_insumo, nombre_insumo, stock_actual, unidad_medida 
-                FROM CA_EA_ST_IY_INSUMOS 
-                ORDER BY nombre_insumo";
-$stmt_insumos = oci_parse($conn, $sql_insumos);
-@oci_execute($stmt_insumos);
-while ($row = oci_fetch_assoc($stmt_insumos)) {
-    $insumos[] = $row;
-}
-oci_free_statement($stmt_insumos);
-
-$sql_personal = "SELECT id_personal, nombre, apellido1, nombre_cargo FROM CA_EA_ST_IY_PERSONAL p JOIN CA_EA_ST_IY_CARGO c ON p.id_cargo = c.id_cargo ORDER BY nombre";
-$stmt_personal = oci_parse($conn, $sql_personal);
-@oci_execute($stmt_personal);
-while ($row = oci_fetch_assoc($stmt_personal)) {
-    $personal[] = $row;
-}
-oci_free_statement($stmt_personal);
+$lotes = consultar_cursor($conn, 'CA_EA_ST_IY_SP_LISTAR_LOTES_ACTIVOS');
+$insumos = consultar_cursor($conn, 'CA_EA_ST_IY_SP_CRUD_LISTAR_INSUMOS');
+$personal = consultar_cursor($conn, 'CA_EA_ST_IY_SP_CRUD_LISTAR_PERSONAL');
 ?>
 <!DOCTYPE html>
 <html lang="es">

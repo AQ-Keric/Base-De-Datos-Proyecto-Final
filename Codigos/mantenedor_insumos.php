@@ -10,14 +10,7 @@ $mensaje = "";
 $error_ocurrido = false;
 
 // Proveedores
-$proveedores = [];
-$sql_prov = "SELECT ID_PROVEEDOR, RAZON_SOCIAL FROM CA_EA_ST_IY_PROVEEDOR ORDER BY RAZON_SOCIAL";
-$stmt_prov = oci_parse($conn, $sql_prov);
-if (@oci_execute($stmt_prov)) { 
-    while ($row = oci_fetch_assoc($stmt_prov)) {
-        $proveedores[] = $row;
-    }
-} 
+$proveedores = consultar_cursor($conn, 'CA_EA_ST_IY_SP_CRUD_LISTAR_PROVEEDORES');
 
 // Guardar cambios
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -96,27 +89,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 
 // Listado
-$sql_list = "SELECT 
-                I.ID_INSUMO, 
-                I.NOMBRE_INSUMO, 
-                I.STOCK_ACTUAL, 
-                I.STOCK_MIN, 
-                I.UNIDAD_MEDIDA,
-                P.RAZON_SOCIAL AS PROVEEDOR
-             FROM CA_EA_ST_IY_INSUMOS I
-             LEFT JOIN CA_EA_ST_IY_PROVEEDOR P ON I.ID_PROVEEDOR = P.ID_PROVEEDOR
-             ORDER BY I.NOMBRE_INSUMO";
-             
-$stmt_list = oci_parse($conn, $sql_list);
-$list_execution_exitosa = @oci_execute($stmt_list);
-
-if (!$list_execution_exitosa) {
-    $e = oci_error($stmt_list);
-    if ($e) {
-        $mensaje = "Error al cargar la lista de insumos: " . $e['message'];
-        $error_ocurrido = true;
-    }
-}
+$insumos_list = consultar_cursor($conn, 'CA_EA_ST_IY_SP_CRUD_LISTAR_INSUMOS');
 ?>
 
 <!DOCTYPE html>
@@ -198,9 +171,12 @@ if (!$list_execution_exitosa) {
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php 
-                                if ($list_execution_exitosa): 
-                                    while ($row = oci_fetch_assoc($stmt_list)): 
+                                <?php if (empty($insumos_list)): ?>
+                                    <tr>
+                                        <td colspan="6" class="text-center text-muted">No hay insumos registrados.</td>
+                                    </tr>
+                                <?php else:
+                                    foreach ($insumos_list as $row):
                                         $alerta_stock = $row['STOCK_ACTUAL'] <= $row['STOCK_MIN'];
                                 ?>
                                     <tr class="<?php echo $alerta_stock ? 'table-danger' : ''; ?>">
@@ -230,12 +206,8 @@ if (!$list_execution_exitosa) {
                                             </form>
                                         </td>
                                     </tr>
-                                    <?php endwhile; 
-                                else: ?>
-                                    <tr>
-                                        <td colspan="6" class="text-center text-danger">No se pudo cargar la lista de insumos. Revise el error de Oracle.</td>
-                                    </tr>
-                                <?php endif; ?>
+                                    <?php endforeach;
+                                endif; ?>
                             </tbody>
                         </table>
                     </div>
@@ -302,12 +274,5 @@ if (!$list_execution_exitosa) {
 </body>
 </html>
 <?php
-
-if (isset($stmt_list) && $stmt_list) {
-    @oci_free_statement($stmt_list);
-}
-if (isset($stmt_prov) && $stmt_prov) {
-    @oci_free_statement($stmt_prov);
-}
 oci_close($conn);
 ?>

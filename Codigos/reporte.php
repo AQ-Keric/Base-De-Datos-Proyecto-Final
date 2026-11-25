@@ -6,39 +6,10 @@ if (!isset($_SESSION['id_usuario'])) {
 }
 require 'db.php'; 
 
-// Ejecutar procedimiento que retorna cursor
-function ejecutar_reporte_cursor($conn, $sp_name) {
-    $data = [];
-    $cursor = oci_new_cursor($conn);
-    $sql = 'BEGIN ' . $sp_name . '(:cursor); END;'; 
-    $stmt = oci_parse($conn, $sql);
-    
-    oci_bind_by_name($stmt, ':cursor', $cursor, -1, OCI_B_CURSOR);
-    
-    if (@oci_execute($stmt) && @oci_execute($cursor)) {
-        while ($row = oci_fetch_assoc($cursor)) {
-            $data[] = $row;
-        }
-    }
-    oci_free_statement($stmt);
-    oci_free_statement($cursor);
-    return $data;
-}
-
-// Cargar reportes
-$trazabilidad = ejecutar_reporte_cursor($conn, 'CA_EA_ST_IY_SP_REPORTE_TRAZABILIDAD');
-$stock_critico = ejecutar_reporte_cursor($conn, 'CA_EA_ST_IY_SP_REPORTE_STOCK_CRITICO');
-
-// Auditoria de trasvasijados
-$sql_auditoria = "SELECT id_log, id_lote, usuario_bd, fecha_movimiento, contenedor_origen, contenedor_destino, accion
-                  FROM CA_EA_ST_IY_AUDITORIA_MOVIMIENTOS ORDER BY fecha_movimiento DESC";
-$stmt_auditoria = oci_parse($conn, $sql_auditoria);
-@oci_execute($stmt_auditoria);
-$auditoria = [];
-while ($row = oci_fetch_assoc($stmt_auditoria)) {
-    $auditoria[] = $row;
-}
-oci_free_statement($stmt_auditoria);
+// Cargar reportes desde procedimientos con cursor
+$trazabilidad = consultar_cursor($conn, 'CA_EA_ST_IY_SP_REPORTE_TRAZABILIDAD');
+$stock_critico = consultar_cursor($conn, 'CA_EA_ST_IY_SP_REPORTE_STOCK_CRITICO');
+$auditoria = consultar_cursor($conn, 'CA_EA_ST_IY_SP_REPORTE_AUDITORIA');
 ?>
 
 <!DOCTYPE html>

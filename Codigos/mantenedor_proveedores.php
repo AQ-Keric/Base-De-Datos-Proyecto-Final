@@ -13,42 +13,63 @@ $error_ocurrido = false;
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $accion = $_POST['accion'] ?? '';
 
-    // Crear
     if ($accion === 'crear') {
         $rut = trim($_POST['rut_proveedor'] ?? '');
         $razon = trim($_POST['razon_social'] ?? '');
 
         if (empty($rut) || empty($razon)) {
             $error_ocurrido = true;
-            $mensaje = "Error: El RUT y la Razón Social son obligatorios.";
+            $mensaje = "Error: El RUT y la Razon Social son obligatorios.";
         } else {
-            $sql = 'INSERT INTO CA_EA_ST_IY_PROVEEDOR (rut_proveedor, razon_social) VALUES (:p_rut, :p_razon)';
+            $sql = 'BEGIN CA_EA_ST_IY_SP_CRUD_CREAR_PROVEEDOR(:p_rut, :p_razon); END;';
             $stmt = oci_parse($conn, $sql);
             oci_bind_by_name($stmt, ':p_rut', $rut);
             oci_bind_by_name($stmt, ':p_razon', $razon);
 
             if (@oci_execute($stmt)) {
-                oci_commit($conn);
-                $mensaje = "Proveedor '$razon' registrado con éxito.";
+                $mensaje = "Proveedor '$razon' registrado con exito.";
             } else {
                 $e = oci_error($stmt);
                 $error_ocurrido = true;
                 $mensaje = "Error al crear proveedor: " . $e['message'];
-                oci_rollback($conn);
             }
             oci_free_statement($stmt);
         }
     }
 
-    // Eliminar
+    if ($accion === 'editar') {
+        $id_prov = filter_input(INPUT_POST, 'id_proveedor', FILTER_VALIDATE_INT);
+        $rut = trim($_POST['rut_proveedor'] ?? '');
+        $razon = trim($_POST['razon_social'] ?? '');
+
+        if ($id_prov === false || empty($rut) || empty($razon)) {
+            $error_ocurrido = true;
+            $mensaje = "Error: Datos incompletos.";
+        } else {
+            $sql = 'BEGIN CA_EA_ST_IY_SP_CRUD_UPDATE_PROVEEDOR(:p_id, :p_rut, :p_razon); END;';
+            $stmt = oci_parse($conn, $sql);
+            oci_bind_by_name($stmt, ':p_id', $id_prov);
+            oci_bind_by_name($stmt, ':p_rut', $rut);
+            oci_bind_by_name($stmt, ':p_razon', $razon);
+
+            if (@oci_execute($stmt)) {
+                $mensaje = "Proveedor ID $id_prov actualizado con exito.";
+            } else {
+                $e = oci_error($stmt);
+                $error_ocurrido = true;
+                $mensaje = "Error al actualizar proveedor: " . $e['message'];
+            }
+            oci_free_statement($stmt);
+        }
+    }
+
     if ($accion === 'eliminar') {
         $id_prov = filter_input(INPUT_POST, 'id_proveedor_eliminar', FILTER_VALIDATE_INT);
-        $sql = 'DELETE FROM CA_EA_ST_IY_PROVEEDOR WHERE id_proveedor = :p_id';
+        $sql = 'BEGIN CA_EA_ST_IY_SP_CRUD_DEL_PROVEEDOR(:p_id); END;';
         $stmt = oci_parse($conn, $sql);
         oci_bind_by_name($stmt, ':p_id', $id_prov);
 
         if (@oci_execute($stmt)) {
-            oci_commit($conn);
             $mensaje = "Proveedor ID $id_prov eliminado correctamente.";
         } else {
             $e = oci_error($stmt);
@@ -58,7 +79,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             } else {
                 $mensaje = "Error al eliminar: " . $e['message'];
             }
-            oci_rollback($conn);
         }
         oci_free_statement($stmt);
     }
@@ -69,19 +89,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 if (isset($_GET['mensaje'])) {
     $mensaje = $_GET['mensaje'];
-    $error_ocurrido = $_GET['error'] == '1';
+    $error_ocurrido = ($_GET['error'] ?? '0') == '1';
 }
 
 // Listado
-$proveedores = [];
-$sql_list = "SELECT id_proveedor, rut_proveedor, razon_social FROM CA_EA_ST_IY_PROVEEDOR ORDER BY id_proveedor DESC";
-$stmt_list = oci_parse($conn, $sql_list);
-if (@oci_execute($stmt_list)) {
-    while ($row = oci_fetch_assoc($stmt_list)) {
-        $proveedores[] = $row;
+$proveedores = consultar_cursor($conn, 'CA_EA_ST_IY_SP_CRUD_LISTAR_PROVEEDORES');
+
+$editando = null;
+if (isset($_GET['editar'])) {
+    foreach ($proveedores as $item) {
+        if ($item['ID_PROVEEDOR'] == $_GET['editar']) {
+            $editando = $item;
+            break;
+        }
     }
 }
-oci_free_statement($stmt_list);
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -118,20 +140,31 @@ oci_free_statement($stmt_list);
             <div class="col-md-4">
                 <div class="card mb-4">
                     <div class="card-header bg-primary text-white">
-                        <h5 class="card-title mb-0">Nuevo Proveedor</h5>
+                        <?php echo $editando ? 'Editar Proveedor #' . $editando['ID_PROVEEDOR'] : 'Nuevo Proveedor'; ?>
                     </div>
                     <div class="card-body">
                         <form action="mantenedor_proveedores.php" method="POST">
-                            <input type="hidden" name="accion" value="crear">
+                            <input type="hidden" name="accion" value="<?php echo $editando ? 'editar' : 'crear'; ?>">
+                            <?php if ($editando): ?>
+                                <input type="hidden" name="id_proveedor" value="<?php echo $editando['ID_PROVEEDOR']; ?>">
+                            <?php endif; ?>
+
                             <div class="mb-3">
                                 <label class="form-label">RUT Proveedor:</label>
-                                <input type="text" class="form-control" name="rut_proveedor" placeholder="ej: 76543210-K" required>
+                                <input type="text" class="form-control" name="rut_proveedor" placeholder="ej: 76543210-K" required
+                                       value="<?php echo htmlspecialchars($editando['RUT_PROVEEDOR'] ?? ''); ?>">
                             </div>
                             <div class="mb-3">
-                                <label class="form-label">Razón Social:</label>
-                                <input type="text" class="form-control" name="razon_social" placeholder="ej: Agrícola del Valle S.A." required>
+                                <label class="form-label">Razon Social:</label>
+                                <input type="text" class="form-control" name="razon_social" placeholder="ej: Agricola del Valle S.A." required
+                                       value="<?php echo htmlspecialchars($editando['RAZON_SOCIAL'] ?? ''); ?>">
                             </div>
-                            <button type="submit" class="btn btn-primary w-100">Guardar Proveedor</button>
+                            <button type="submit" class="btn btn-primary w-100">
+                                <?php echo $editando ? 'Actualizar Proveedor' : 'Guardar Proveedor'; ?>
+                            </button>
+                            <?php if ($editando): ?>
+                                <a href="mantenedor_proveedores.php" class="btn btn-secondary w-100 mt-2">Cancelar</a>
+                            <?php endif; ?>
                         </form>
                     </div>
                 </div>
@@ -139,16 +172,14 @@ oci_free_statement($stmt_list);
 
             <div class="col-md-8">
                 <div class="card">
-                    <div class="card-header bg-dark text-white">
-                        <h5 class="card-title mb-0">Listado de Proveedores</h5>
-                    </div>
+                    <div class="card-header bg-dark text-white">Listado de Proveedores</div>
                     <div class="card-body">
                         <table class="table table-striped table-hover">
                             <thead>
                                 <tr>
                                     <th>ID</th>
                                     <th>RUT</th>
-                                    <th>Razón Social</th>
+                                    <th>Razon Social</th>
                                     <th>Acciones</th>
                                 </tr>
                             </thead>
@@ -162,6 +193,7 @@ oci_free_statement($stmt_list);
                                             <td><?php echo htmlspecialchars($p['RUT_PROVEEDOR']); ?></td>
                                             <td><?php echo htmlspecialchars($p['RAZON_SOCIAL']); ?></td>
                                             <td>
+                                                <a href="mantenedor_proveedores.php?editar=<?php echo $p['ID_PROVEEDOR']; ?>" class="btn btn-sm btn-warning">Editar</a>
                                                 <form action="mantenedor_proveedores.php" method="POST" style="display:inline;" onsubmit="return confirm('¿Eliminar proveedor?');">
                                                     <input type="hidden" name="accion" value="eliminar">
                                                     <input type="hidden" name="id_proveedor_eliminar" value="<?php echo $p['ID_PROVEEDOR']; ?>">
@@ -181,3 +213,4 @@ oci_free_statement($stmt_list);
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+<?php oci_close($conn); ?>

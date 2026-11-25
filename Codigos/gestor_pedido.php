@@ -50,38 +50,9 @@ if (isset($_GET['mensaje'])) {
 }
 
 // Cargar datos
-$sql_clientes = "SELECT rut_cliente, razon_social FROM CA_EA_ST_IY_CLIENTE ORDER BY razon_social";
-$stmt_cli = oci_parse($conn, $sql_clientes);
-if (@oci_execute($stmt_cli)) {
-    while ($row = oci_fetch_assoc($stmt_cli)) {
-        $clientes[] = $row;
-    }
-}
-oci_free_statement($stmt_cli);
-
-$sql_prod = "SELECT id_producto, nombre_prod, stock, precio FROM CA_EA_ST_IY_PRODUCTOS ORDER BY nombre_prod";
-$stmt_prod = oci_parse($conn, $sql_prod);
-if (@oci_execute($stmt_prod)) {
-    while ($row = oci_fetch_assoc($stmt_prod)) {
-        $productos[] = $row;
-    }
-}
-oci_free_statement($stmt_prod);
-
-$sql_pedidos = "SELECT p.id_pedido, c.rut_cliente, c.razon_social, p.fecha_pedido, p.estado_pedido,
-                       pr.nombre_prod, dp.cantidad, pr.precio, (dp.cantidad * pr.precio) AS total
-                FROM CA_EA_ST_IY_PEDIDO_VENTA p
-                JOIN CA_EA_ST_IY_CLIENTE c ON p.id_cliente = c.id_cliente
-                JOIN CA_EA_ST_IY_DETALLE_PEDIDO_VENTA dp ON p.id_pedido = dp.id_pedido
-                JOIN CA_EA_ST_IY_PRODUCTOS pr ON dp.id_producto = pr.id_producto
-                ORDER BY p.id_pedido DESC";
-$stmt_ped = oci_parse($conn, $sql_pedidos);
-if (@oci_execute($stmt_ped)) {
-    while ($row = oci_fetch_assoc($stmt_ped)) {
-        $pedidos[] = $row;
-    }
-}
-oci_free_statement($stmt_ped);
+$clientes = consultar_cursor($conn, 'CA_EA_ST_IY_SP_CRUD_LISTAR_CLIENTES');
+$productos = consultar_cursor($conn, 'CA_EA_ST_IY_SP_CRUD_LISTAR_PRODUCTOS');
+$pedidos = consultar_cursor($conn, 'CA_EA_ST_IY_SP_LISTAR_PEDIDOS');
 ?>
 <!DOCTYPE html>
 <html lang="es">

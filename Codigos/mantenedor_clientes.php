@@ -13,16 +13,14 @@ $error_ocurrido = false;
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $accion = $_POST['accion'] ?? '';
 
-    // Crear
     if ($accion === 'crear') {
         $rut = trim($_POST['rut_cliente'] ?? '');
         $razon = trim($_POST['razon_social'] ?? '');
         $direccion = trim($_POST['direccion'] ?? '');
-        $pais = trim($_POST['pais'] ?? 'Chile');
 
         if (empty($rut) || empty($razon)) {
             $error_ocurrido = true;
-            $mensaje = "Error: El RUT y la Razón Social son obligatorios.";
+            $mensaje = "Error: El RUT y la Razon Social son obligatorios.";
         } else {
             $sql = 'BEGIN CA_EA_ST_IY_SP_CRUD_CREAR_CLIENTE(:p_rut, :p_razon, :p_dir); END;';
             $stmt = oci_parse($conn, $sql);
@@ -31,7 +29,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             oci_bind_by_name($stmt, ':p_dir', $direccion);
 
             if (@oci_execute($stmt)) {
-                $mensaje = "Cliente '$razon' registrado con éxito.";
+                $mensaje = "Cliente '$razon' registrado con exito.";
             } else {
                 $e = oci_error($stmt);
                 $error_ocurrido = true;
@@ -41,22 +39,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
-    // Actualizar
-    if ($accion === 'actualizar') {
+    if ($accion === 'editar') {
         $id_cliente = filter_input(INPUT_POST, 'id_cliente', FILTER_VALIDATE_INT);
+        $rut = trim($_POST['rut_cliente'] ?? '');
+        $razon = trim($_POST['razon_social'] ?? '');
         $direccion = trim($_POST['direccion'] ?? '');
 
-        if ($id_cliente === false || empty($direccion)) {
+        if ($id_cliente === false || empty($rut) || empty($razon)) {
             $error_ocurrido = true;
-            $mensaje = "Error: ID de cliente y dirección requeridos.";
+            $mensaje = "Error: Datos incompletos.";
         } else {
-            $sql = 'BEGIN CA_EA_ST_IY_SP_CRUD_UPDATE_CLIENTE(:p_id, :p_dir); END;';
+            $sql = 'BEGIN CA_EA_ST_IY_SP_CRUD_UPDATE_CLIENTE(:p_id, :p_rut, :p_razon, :p_dir); END;';
             $stmt = oci_parse($conn, $sql);
             oci_bind_by_name($stmt, ':p_id', $id_cliente);
+            oci_bind_by_name($stmt, ':p_rut', $rut);
+            oci_bind_by_name($stmt, ':p_razon', $razon);
             oci_bind_by_name($stmt, ':p_dir', $direccion);
 
             if (@oci_execute($stmt)) {
-                $mensaje = "Dirección del cliente ID $id_cliente actualizada.";
+                $mensaje = "Cliente ID $id_cliente actualizado con exito.";
             } else {
                 $e = oci_error($stmt);
                 $error_ocurrido = true;
@@ -66,15 +67,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
-    // Eliminar
     if ($accion === 'eliminar') {
         $id_cliente = filter_input(INPUT_POST, 'id_cliente_eliminar', FILTER_VALIDATE_INT);
-        $sql = 'DELETE FROM CA_EA_ST_IY_CLIENTE WHERE id_cliente = :p_id';
+        $sql = 'BEGIN CA_EA_ST_IY_SP_CRUD_DEL_CLIENTE(:p_id); END;';
         $stmt = oci_parse($conn, $sql);
         oci_bind_by_name($stmt, ':p_id', $id_cliente);
 
         if (@oci_execute($stmt)) {
-            oci_commit($conn);
             $mensaje = "Cliente ID $id_cliente eliminado correctamente.";
         } else {
             $e = oci_error($stmt);
@@ -84,7 +83,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             } else {
                 $mensaje = "Error al eliminar: " . $e['message'];
             }
-            oci_rollback($conn);
         }
         oci_free_statement($stmt);
     }
@@ -95,19 +93,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 if (isset($_GET['mensaje'])) {
     $mensaje = $_GET['mensaje'];
-    $error_ocurrido = $_GET['error'] == '1';
+    $error_ocurrido = ($_GET['error'] ?? '0') == '1';
 }
 
 // Listado
-$clientes = [];
-$sql_list = "SELECT id_cliente, rut_cliente, razon_social, direccion, pais FROM CA_EA_ST_IY_CLIENTE ORDER BY id_cliente DESC";
-$stmt_list = oci_parse($conn, $sql_list);
-if (@oci_execute($stmt_list)) {
-    while ($row = oci_fetch_assoc($stmt_list)) {
-        $clientes[] = $row;
+$clientes = consultar_cursor($conn, 'CA_EA_ST_IY_SP_CRUD_LISTAR_CLIENTES');
+
+$editando = null;
+if (isset($_GET['editar'])) {
+    foreach ($clientes as $item) {
+        if ($item['ID_CLIENTE'] == $_GET['editar']) {
+            $editando = $item;
+            break;
+        }
     }
 }
-oci_free_statement($stmt_list);
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -144,24 +144,36 @@ oci_free_statement($stmt_list);
             <div class="col-md-4">
                 <div class="card mb-4">
                     <div class="card-header bg-primary text-white">
-                        <h5 class="card-title mb-0">Nuevo Cliente</h5>
+                        <?php echo $editando ? 'Editar Cliente #' . $editando['ID_CLIENTE'] : 'Nuevo Cliente'; ?>
                     </div>
                     <div class="card-body">
                         <form action="mantenedor_clientes.php" method="POST">
-                            <input type="hidden" name="accion" value="crear">
+                            <input type="hidden" name="accion" value="<?php echo $editando ? 'editar' : 'crear'; ?>">
+                            <?php if ($editando): ?>
+                                <input type="hidden" name="id_cliente" value="<?php echo $editando['ID_CLIENTE']; ?>">
+                            <?php endif; ?>
+
                             <div class="mb-3">
                                 <label class="form-label">RUT:</label>
-                                <input type="text" class="form-control" name="rut_cliente" placeholder="ej: 76111222-3" required>
+                                <input type="text" class="form-control" name="rut_cliente" placeholder="ej: 76111222-3" required
+                                       value="<?php echo htmlspecialchars($editando['RUT_CLIENTE'] ?? ''); ?>">
                             </div>
                             <div class="mb-3">
-                                <label class="form-label">Razón Social:</label>
-                                <input type="text" class="form-control" name="razon_social" placeholder="ej: Supermercados Lider" required>
+                                <label class="form-label">Razon Social:</label>
+                                <input type="text" class="form-control" name="razon_social" placeholder="ej: Supermercados Lider" required
+                                       value="<?php echo htmlspecialchars($editando['RAZON_SOCIAL'] ?? ''); ?>">
                             </div>
                             <div class="mb-3">
-                                <label class="form-label">Dirección:</label>
-                                <input type="text" class="form-control" name="direccion" placeholder="ej: Av. Central 456">
+                                <label class="form-label">Direccion:</label>
+                                <input type="text" class="form-control" name="direccion" placeholder="ej: Av. Central 456"
+                                       value="<?php echo htmlspecialchars($editando['DIRECCION'] ?? ''); ?>">
                             </div>
-                            <button type="submit" class="btn btn-primary w-100">Guardar Cliente</button>
+                            <button type="submit" class="btn btn-primary w-100">
+                                <?php echo $editando ? 'Actualizar Cliente' : 'Guardar Cliente'; ?>
+                            </button>
+                            <?php if ($editando): ?>
+                                <a href="mantenedor_clientes.php" class="btn btn-secondary w-100 mt-2">Cancelar</a>
+                            <?php endif; ?>
                         </form>
                     </div>
                 </div>
@@ -169,17 +181,15 @@ oci_free_statement($stmt_list);
 
             <div class="col-md-8">
                 <div class="card">
-                    <div class="card-header bg-dark text-white">
-                        <h5 class="card-title mb-0">Listado de Clientes</h5>
-                    </div>
+                    <div class="card-header bg-dark text-white">Listado de Clientes</div>
                     <div class="card-body">
                         <table class="table table-striped table-hover">
                             <thead>
                                 <tr>
                                     <th>ID</th>
                                     <th>RUT</th>
-                                    <th>Razón Social</th>
-                                    <th>Dirección</th>
+                                    <th>Razon Social</th>
+                                    <th>Direccion</th>
                                     <th>Acciones</th>
                                 </tr>
                             </thead>
@@ -194,6 +204,7 @@ oci_free_statement($stmt_list);
                                             <td><?php echo htmlspecialchars($c['RAZON_SOCIAL']); ?></td>
                                             <td><?php echo htmlspecialchars($c['DIRECCION'] ?? '-'); ?></td>
                                             <td>
+                                                <a href="mantenedor_clientes.php?editar=<?php echo $c['ID_CLIENTE']; ?>" class="btn btn-sm btn-warning">Editar</a>
                                                 <form action="mantenedor_clientes.php" method="POST" style="display:inline;" onsubmit="return confirm('¿Eliminar cliente?');">
                                                     <input type="hidden" name="accion" value="eliminar">
                                                     <input type="hidden" name="id_cliente_eliminar" value="<?php echo $c['ID_CLIENTE']; ?>">
@@ -213,3 +224,4 @@ oci_free_statement($stmt_list);
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+<?php oci_close($conn); ?>

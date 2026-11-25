@@ -53,36 +53,13 @@ if (isset($_GET['mensaje'])) {
 }
 
 // Cargar datos
-$sql_cuarteles = "SELECT id_cuartel, nombre_cuartel, nombre_variedad FROM CA_EA_ST_IY_CUARTEL c JOIN CA_EA_ST_IY_VARIEDAD_UVA v ON c.id_variedad = v.id_variedad ORDER BY nombre_cuartel";
-$stmt_cuarteles = oci_parse($conn, $sql_cuarteles);
-@oci_execute($stmt_cuarteles);
-while ($row = oci_fetch_assoc($stmt_cuarteles)) {
-    $cuarteles[] = $row;
-}
-oci_free_statement($stmt_cuarteles);
-
-$sql_personal = "SELECT id_personal, nombre, apellido1, nombre_cargo FROM CA_EA_ST_IY_PERSONAL p JOIN CA_EA_ST_IY_CARGO c ON p.id_cargo = c.id_cargo ORDER BY nombre";
-$stmt_personal = oci_parse($conn, $sql_personal);
-@oci_execute($stmt_personal);
-while ($row = oci_fetch_assoc($stmt_personal)) {
-    $personal[] = $row;
-}
-oci_free_statement($stmt_personal);
-
-$cursor_cont = oci_new_cursor($conn);
-$sql_cont = 'BEGIN CA_EA_ST_IY_SP_REPORTE_OCUPACION_BODEGA(:cursor); END;'; 
-$stmt_cont = oci_parse($conn, $sql_cont);
-oci_bind_by_name($stmt_cont, ':cursor', $cursor_cont, -1, OCI_B_CURSOR);
-@oci_execute($stmt_cont);
-@oci_execute($cursor_cont);
-
-while ($row = oci_fetch_assoc($cursor_cont)) {
-    if ($row['ESTADO'] == 'LIBRE') { 
+$cuarteles = consultar_cursor($conn, 'CA_EA_ST_IY_SP_CRUD_LISTAR_CUARTELES');
+$personal = consultar_cursor($conn, 'CA_EA_ST_IY_SP_CRUD_LISTAR_PERSONAL');
+foreach (consultar_cursor($conn, 'CA_EA_ST_IY_SP_REPORTE_OCUPACION_BODEGA') as $row) {
+    if ($row['ESTADO'] == 'LIBRE') {
         $contenedores[] = $row;
     }
 }
-oci_free_statement($stmt_cont);
-oci_free_statement($cursor_cont);
 ?>
 <!DOCTYPE html>
 <html lang="es">

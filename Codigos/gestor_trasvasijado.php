@@ -47,36 +47,12 @@ if (isset($_GET['mensaje'])) {
 }
 
 // Cargar datos
-$sql_lotes = "SELECT l.id_lote, l.litros_actuales, l.estado, v.nombre_variedad, 
-                     c.material || ' (Cap: ' || c.capacidad || 'L)' AS contenedor_actual
-              FROM CA_EA_ST_IY_LOTE l
-              JOIN CA_EA_ST_IY_RECEPCION_COSECHA rc ON l.id_cosecha = rc.id_cosecha
-              JOIN CA_EA_ST_IY_CUARTEL cu ON rc.id_cuartel = cu.id_cuartel
-              JOIN CA_EA_ST_IY_VARIEDAD_UVA v ON cu.id_variedad = v.id_variedad
-              JOIN CA_EA_ST_IY_CONTENEDORES c ON l.id_contenedor = c.id_contenedor
-              WHERE UPPER(l.estado) != 'FINALIZADO'
-              ORDER BY l.id_lote DESC";
-$stmt_lotes = oci_parse($conn, $sql_lotes);
-@oci_execute($stmt_lotes);
-while ($row = oci_fetch_assoc($stmt_lotes)) {
-    $lotes[] = $row;
-}
-oci_free_statement($stmt_lotes);
-
-$cursor_cont = oci_new_cursor($conn);
-$sql_cont = 'BEGIN CA_EA_ST_IY_SP_REPORTE_OCUPACION_BODEGA(:cursor); END;'; 
-$stmt_cont = oci_parse($conn, $sql_cont);
-oci_bind_by_name($stmt_cont, ':cursor', $cursor_cont, -1, OCI_B_CURSOR);
-@oci_execute($stmt_cont);
-@oci_execute($cursor_cont);
-
-while ($row = oci_fetch_assoc($cursor_cont)) {
-    if ($row['ESTADO'] == 'LIBRE') { 
+$lotes = consultar_cursor($conn, 'CA_EA_ST_IY_SP_LISTAR_LOTES_ACTIVOS');
+foreach (consultar_cursor($conn, 'CA_EA_ST_IY_SP_REPORTE_OCUPACION_BODEGA') as $row) {
+    if ($row['ESTADO'] == 'LIBRE') {
         $contenedores[] = $row;
     }
 }
-oci_free_statement($stmt_cont);
-oci_free_statement($cursor_cont);
 ?>
 <!DOCTYPE html>
 <html lang="es">
