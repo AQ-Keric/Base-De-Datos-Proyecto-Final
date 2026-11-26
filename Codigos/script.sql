@@ -307,7 +307,19 @@ BEGIN
     INSERT INTO CA_EA_ST_IY_LOTE (id_cosecha, litros_actuales, estado, ubicacion, id_contenedor)
     VALUES (v_id_cosecha, v_litros, 'Fermentacion', 'Bodega Central', p_id_contenedor);
     COMMIT;
-EXCEPTION WHEN OTHERS THEN ROLLBACK; RAISE;
+EXCEPTION
+    WHEN VALUE_ERROR THEN
+        ROLLBACK;
+        RAISE_APPLICATION_ERROR(-20001, 'Error en los valores ingresados para la recepcion.');
+    WHEN PROGRAM_ERROR THEN
+        ROLLBACK;
+        RAISE_APPLICATION_ERROR(-20002, 'Error de programa en recepcion de cosecha.');
+    WHEN STORAGE_ERROR THEN
+        ROLLBACK;
+        RAISE_APPLICATION_ERROR(-20003, 'Error de memoria o almacenamiento.');
+    WHEN OTHERS THEN
+        ROLLBACK;
+        RAISE_APPLICATION_ERROR(-20099, 'Error al registrar recepcion: ' || SQLERRM);
 END CA_EA_ST_IY_SP_GESTION_RECEPCION;
 /
 
@@ -316,7 +328,19 @@ BEGIN
     LOCK TABLE CA_EA_ST_IY_LOTE IN ROW EXCLUSIVE MODE;
     UPDATE CA_EA_ST_IY_LOTE SET id_contenedor = p_nuevo_contenedor, ubicacion = 'Bodega Barricas' WHERE id_lote = p_id_lote;
     COMMIT;
-EXCEPTION WHEN OTHERS THEN ROLLBACK; RAISE;
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        ROLLBACK;
+        RAISE_APPLICATION_ERROR(-20004, 'No se encontro el lote o contenedor indicado.');
+    WHEN PROGRAM_ERROR THEN
+        ROLLBACK;
+        RAISE_APPLICATION_ERROR(-20002, 'Error de programa en trasvasijado.');
+    WHEN STORAGE_ERROR THEN
+        ROLLBACK;
+        RAISE_APPLICATION_ERROR(-20003, 'Error de memoria o almacenamiento.');
+    WHEN OTHERS THEN
+        ROLLBACK;
+        RAISE_APPLICATION_ERROR(-20099, 'Error al realizar trasvasijado: ' || SQLERRM);
 END CA_EA_ST_IY_SP_GESTION_TRASVASIJADO;
 /
 
@@ -328,7 +352,19 @@ BEGIN
     INSERT INTO CA_EA_ST_IY_APLICACION_INSUMOS (id_lote, id_insumo, id_personal, cantidad_usada, motivo_uso)
     VALUES (p_id_lote, p_id_insumo, p_id_personal, p_cantidad, p_motivo);
     COMMIT;
-EXCEPTION WHEN OTHERS THEN ROLLBACK; RAISE;
+EXCEPTION
+    WHEN VALUE_ERROR THEN
+        ROLLBACK;
+        RAISE_APPLICATION_ERROR(-20001, 'Error en la cantidad de insumo ingresada.');
+    WHEN PROGRAM_ERROR THEN
+        ROLLBACK;
+        RAISE_APPLICATION_ERROR(-20002, 'Error de programa al aplicar insumo.');
+    WHEN STORAGE_ERROR THEN
+        ROLLBACK;
+        RAISE_APPLICATION_ERROR(-20003, 'Error de memoria o almacenamiento.');
+    WHEN OTHERS THEN
+        ROLLBACK;
+        RAISE_APPLICATION_ERROR(-20099, 'Error al aplicar insumo: ' || SQLERRM);
 END CA_EA_ST_IY_SP_GESTION_APLICAR_INSUMO;
 /
 
@@ -342,10 +378,22 @@ BEGIN
     INSERT INTO CA_EA_ST_IY_PEDIDO_VENTA (id_cliente, estado_pedido) VALUES (v_id_cliente, 'Pendiente') RETURNING id_pedido INTO v_id_pedido;
     INSERT INTO CA_EA_ST_IY_DETALLE_PEDIDO_VENTA (id_pedido, id_producto, cantidad) VALUES (v_id_pedido, p_id_producto, p_cantidad);
     COMMIT;
-EXCEPTION WHEN NO_DATA_FOUND THEN 
-    ROLLBACK;
-    RAISE_APPLICATION_ERROR(-20010, 'Cliente no existe');
-WHEN OTHERS THEN ROLLBACK; RAISE;
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN 
+        ROLLBACK;
+        RAISE_APPLICATION_ERROR(-20010, 'Cliente no existe.');
+    WHEN VALUE_ERROR THEN
+        ROLLBACK;
+        RAISE_APPLICATION_ERROR(-20001, 'Error en los datos del pedido.');
+    WHEN PROGRAM_ERROR THEN
+        ROLLBACK;
+        RAISE_APPLICATION_ERROR(-20002, 'Error de programa al crear pedido.');
+    WHEN STORAGE_ERROR THEN
+        ROLLBACK;
+        RAISE_APPLICATION_ERROR(-20003, 'Error de memoria o almacenamiento.');
+    WHEN OTHERS THEN
+        ROLLBACK;
+        RAISE_APPLICATION_ERROR(-20099, 'Error al crear pedido: ' || SQLERRM);
 END CA_EA_ST_IY_SP_GESTION_CREAR_PEDIDO;
 /
 
@@ -359,7 +407,19 @@ BEGIN
     INSERT INTO CA_EA_ST_IY_EMBOTELLADO (id_producto, cantidad_producida, id_lote, litros_usados)
     VALUES (p_id_producto, p_cantidad_botellas, p_id_lote, (p_cantidad_botellas * 0.75));
     COMMIT;
-EXCEPTION WHEN OTHERS THEN ROLLBACK; RAISE;
+EXCEPTION
+    WHEN VALUE_ERROR THEN
+        ROLLBACK;
+        RAISE_APPLICATION_ERROR(-20001, 'Cantidad de botellas invalida para embotellado.');
+    WHEN PROGRAM_ERROR THEN
+        ROLLBACK;
+        RAISE_APPLICATION_ERROR(-20002, 'Error de programa en embotellado.');
+    WHEN STORAGE_ERROR THEN
+        ROLLBACK;
+        RAISE_APPLICATION_ERROR(-20003, 'Error de memoria o almacenamiento.');
+    WHEN OTHERS THEN
+        ROLLBACK;
+        RAISE_APPLICATION_ERROR(-20099, 'Error al embotellar: ' || SQLERRM);
 END CA_EA_ST_IY_SP_GESTION_EMBOTELLADO;
 /
 
@@ -463,7 +523,19 @@ BEGIN
     LOCK TABLE CA_EA_ST_IY_PERSONAL IN ROW EXCLUSIVE MODE;
     INSERT INTO CA_EA_ST_IY_PERSONAL (rut, nombre, apellido1, id_cargo) VALUES (p_rut, p_nom, p_ape, p_cargo);
     COMMIT;
-EXCEPTION WHEN OTHERS THEN ROLLBACK; RAISE;
+EXCEPTION
+    WHEN DUP_VAL_ON_INDEX THEN
+        ROLLBACK;
+        RAISE_APPLICATION_ERROR(-20011, 'El RUT ingresado ya se encuentra registrado.');
+    WHEN VALUE_ERROR THEN
+        ROLLBACK;
+        RAISE_APPLICATION_ERROR(-20001, 'Error en los datos del personal.');
+    WHEN PROGRAM_ERROR THEN
+        ROLLBACK;
+        RAISE_APPLICATION_ERROR(-20002, 'Error de programa al crear personal.');
+    WHEN OTHERS THEN
+        ROLLBACK;
+        RAISE_APPLICATION_ERROR(-20099, 'Error al crear personal: ' || SQLERRM);
 END CA_EA_ST_IY_SP_CRUD_CREAR_PERSONAL;
 /
 
@@ -739,7 +811,19 @@ BEGIN
     LOCK TABLE CA_EA_ST_IY_USUARIOS IN ROW EXCLUSIVE MODE;
     INSERT INTO CA_EA_ST_IY_USUARIOS (id_perfil, nombre, password, email) VALUES (p_perf, p_nom, p_pass, p_mail);
     COMMIT;
-EXCEPTION WHEN OTHERS THEN ROLLBACK; RAISE;
+EXCEPTION
+    WHEN DUP_VAL_ON_INDEX THEN
+        ROLLBACK;
+        RAISE_APPLICATION_ERROR(-20012, 'El correo electronico ya esta registrado (unique constraint).');
+    WHEN VALUE_ERROR THEN
+        ROLLBACK;
+        RAISE_APPLICATION_ERROR(-20001, 'Error en los datos del usuario.');
+    WHEN PROGRAM_ERROR THEN
+        ROLLBACK;
+        RAISE_APPLICATION_ERROR(-20002, 'Error de programa al crear usuario.');
+    WHEN OTHERS THEN
+        ROLLBACK;
+        RAISE_APPLICATION_ERROR(-20099, 'Error al crear usuario: ' || SQLERRM);
 END CA_EA_ST_IY_SP_CRUD_CREAR_USUARIO;
 /
 
