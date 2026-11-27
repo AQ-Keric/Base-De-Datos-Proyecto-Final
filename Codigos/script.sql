@@ -815,6 +815,206 @@ BEGIN
 END CA_EA_ST_IY_SP_LISTAR_PEDIDOS;
 /
 
+CREATE OR REPLACE TRIGGER CA_EA_ST_IY_VERIFICAR_NOMBRE_USUARIO
+BEFORE INSERT OR UPDATE ON CA_EA_ST_IY_USUARIOS
+FOR EACH ROW
+DECLARE
+BEGIN
+    IF REGEXP_LIKE(:NEW.nombre, '[0-9]') THEN
+        RAISE_APPLICATION_ERROR(-20002, 'El nombre no puede contener números');
+    END IF;
+END;
+/
+
+CREATE OR REPLACE TRIGGER CA_EA_ST_IY_VERIFICAR_NOMBRE_APELLIDO_PERSONAL
+BEFORE INSERT OR UPDATE ON CA_EA_ST_IY_PERSONAL
+FOR EACH ROW
+DECLARE
+BEGIN
+    IF REGEXP_LIKE(:NEW.nombre, '[0-9]') THEN
+        RAISE_APPLICATION_ERROR(-20003, 'El nombre no puede contener números');
+    END IF;
+    IF REGEXP_LIKE(:NEW.apellido1, '[0-9]') THEN
+        RAISE_APPLICATION_ERROR(-20004, 'El primer apellido no puede contener numeros');
+    END IF;
+    IF REGEXP_LIKE(:NEW.apellido2, '[0-9]') THEN
+        RAISE_APPLICATION_ERROR(-20005, 'El segundo apellido no puede contener numeros');
+    END IF;
+END;
+/
+
+CREATE OR REPLACE FUNCTION CA_EA_ST_IY_FN_FORMATEAR_RUT(
+    p_rut IN VARCHAR2
+) RETURN VARCHAR2 IS
+    v_limpio VARCHAR2(20);
+BEGIN
+    IF p_rut IS NULL THEN
+        RETURN NULL;
+    END IF;
+
+    v_limpio := UPPER(REPLACE(REPLACE(REPLACE(TRIM(p_rut), '.', ''), '-', ''), ' ', ''));
+
+    IF LENGTH(v_limpio) < 2 THEN
+        RETURN v_limpio;
+    END IF;
+
+    RETURN SUBSTR(v_limpio, 1, LENGTH(v_limpio) - 1) || '-' || SUBSTR(v_limpio, -1);
+END CA_EA_ST_IY_FN_FORMATEAR_RUT;
+/
+
+CREATE OR REPLACE TRIGGER CA_EA_ST_IY_VERIFICAR_RUT_PERSONAL
+BEFORE INSERT OR UPDATE ON CA_EA_ST_IY_PERSONAL
+FOR EACH ROW
+DECLARE
+    v_cuerpo      VARCHAR2(10);
+    v_dv_ingresado CHAR(1);
+    v_dv_calculado CHAR(1);
+    v_suma        NUMBER := 0;
+    v_multiplo    NUMBER := 2;
+    v_resto       NUMBER;
+    v_resultado   NUMBER;
+BEGIN
+    -- 1. Formatea automáticamente a 12345678-9 (o 12345678-K)
+    :NEW.rut := CA_EA_ST_IY_FN_FORMATEAR_RUT(:NEW.rut);
+
+    -- 2. Valida la estructura básica
+    IF :NEW.rut IS NULL OR NOT REGEXP_LIKE(:NEW.rut, '^[0-9]{7,8}-[0-9K]$') THEN
+        RAISE_APPLICATION_ERROR(-20006, 'El RUT ingresado no tiene un formato valido (Ej: 12345678-9)');
+    END IF;
+
+    -- 3. Separa cuerpo y dígito verificador
+    v_cuerpo := SUBSTR(:NEW.rut, 1, INSTR(:NEW.rut, '-') - 1);
+    v_dv_ingresado := SUBSTR(:NEW.rut, -1);
+
+    -- 4. Calcula el dígito verificador (Algoritmo Módulo 11)
+    FOR i IN REVERSE 1..LENGTH(v_cuerpo) LOOP
+        v_suma := v_suma + (TO_NUMBER(SUBSTR(v_cuerpo, i, 1)) * v_multiplo);
+        v_multiplo := v_multiplo + 1;
+        IF v_multiplo > 7 THEN
+            v_multiplo := 2;
+        END IF;
+    END LOOP;
+
+    v_resto := MOD(v_suma, 11);
+    v_resultado := 11 - v_resto;
+
+    IF v_resultado = 11 THEN
+        v_dv_calculado := '0';
+    ELSIF v_resultado = 10 THEN
+        v_dv_calculado := 'K';
+    ELSE
+        v_dv_calculado := TO_CHAR(v_resultado);
+    END IF;
+
+    -- 5. Compara el dígito ingresado contra el real
+    IF v_dv_ingresado != v_dv_calculado THEN
+        RAISE_APPLICATION_ERROR(-20007, 'El digito verificador del RUT es incorrecto');
+    END IF;
+END;
+/
+
+CREATE OR REPLACE TRIGGER CA_EA_ST_IY_VERIFICAR_RUT_CLIENTE
+BEFORE INSERT OR UPDATE ON CA_EA_ST_IY_CLIENTE
+FOR EACH ROW
+DECLARE
+    v_cuerpo       VARCHAR2(10);
+    v_dv_ingresado CHAR(1);
+    v_dv_calculado CHAR(1);
+    v_suma         NUMBER := 0;
+    v_multiplo     NUMBER := 2;
+    v_resto        NUMBER;
+    v_resultado    NUMBER;
+BEGIN
+    -- 1. Formatea automáticamente a 12345678-9 (o 12345678-K)
+    :NEW.rut_cliente := CA_EA_ST_IY_FN_FORMATEAR_RUT(:NEW.rut_cliente);
+
+    -- 2. Valida la estructura básica
+    IF :NEW.rut_cliente IS NULL OR NOT REGEXP_LIKE(:NEW.rut_cliente, '^[0-9]{7,8}-[0-9K]$') THEN
+        RAISE_APPLICATION_ERROR(-20006, 'El RUT del cliente no tiene un formato valido (Ej: 12345678-9)');
+    END IF;
+
+    -- 3. Separa cuerpo y dígito verificador
+    v_cuerpo := SUBSTR(:NEW.rut_cliente, 1, INSTR(:NEW.rut_cliente, '-') - 1);
+    v_dv_ingresado := SUBSTR(:NEW.rut_cliente, -1);
+
+    -- 4. Calcula el dígito verificador (Algoritmo Módulo 11)
+    FOR i IN REVERSE 1..LENGTH(v_cuerpo) LOOP
+        v_suma := v_suma + (TO_NUMBER(SUBSTR(v_cuerpo, i, 1)) * v_multiplo);
+        v_multiplo := v_multiplo + 1;
+        IF v_multiplo > 7 THEN
+            v_multiplo := 2;
+        END IF;
+    END LOOP;
+
+    v_resto := MOD(v_suma, 11);
+    v_resultado := 11 - v_resto;
+
+    IF v_resultado = 11 THEN
+        v_dv_calculado := '0';
+    ELSIF v_resultado = 10 THEN
+        v_dv_calculado := 'K';
+    ELSE
+        v_dv_calculado := TO_CHAR(v_resultado);
+    END IF;
+
+    -- 5. Compara el dígito ingresado contra el real
+    IF v_dv_ingresado != v_dv_calculado THEN
+        RAISE_APPLICATION_ERROR(-20007, 'El digito verificador del RUT es incorrecto');
+    END IF;
+END;
+/
+
+CREATE OR REPLACE TRIGGER CA_EA_ST_IY_VERIFICAR_RUT_PROVEEDOR
+BEFORE INSERT OR UPDATE ON CA_EA_ST_IY_PROVEEDOR
+FOR EACH ROW
+DECLARE
+    v_cuerpo       VARCHAR2(10);
+    v_dv_ingresado CHAR(1);
+    v_dv_calculado CHAR(1);
+    v_suma         NUMBER := 0;
+    v_multiplo     NUMBER := 2;
+    v_resto        NUMBER;
+    v_resultado    NUMBER;
+BEGIN
+    -- 1. Formatea automáticamente a 12345678-9 (o 12345678-K)
+    :NEW.rut_proveedor := CA_EA_ST_IY_FN_FORMATEAR_RUT(:NEW.rut_proveedor);
+
+    -- 2. Valida la estructura básica
+    IF :NEW.rut_proveedor IS NULL OR NOT REGEXP_LIKE(:NEW.rut_proveedor, '^[0-9]{7,8}-[0-9K]$') THEN
+        RAISE_APPLICATION_ERROR(-20006, 'El RUT del proveedor no tiene un formato valido (Ej: 76543210-K)');
+    END IF;
+
+    -- 3. Separa cuerpo y dígito verificador
+    v_cuerpo := SUBSTR(:NEW.rut_proveedor, 1, INSTR(:NEW.rut_proveedor, '-') - 1);
+    v_dv_ingresado := SUBSTR(:NEW.rut_proveedor, -1);
+
+    -- 4. Calcula el dígito verificador (Algoritmo Módulo 11)
+    FOR i IN REVERSE 1..LENGTH(v_cuerpo) LOOP
+        v_suma := v_suma + (TO_NUMBER(SUBSTR(v_cuerpo, i, 1)) * v_multiplo);
+        v_multiplo := v_multiplo + 1;
+        IF v_multiplo > 7 THEN
+            v_multiplo := 2;
+        END IF;
+    END LOOP;
+
+    v_resto := MOD(v_suma, 11);
+    v_resultado := 11 - v_resto;
+
+    IF v_resultado = 11 THEN
+        v_dv_calculado := '0';
+    ELSIF v_resultado = 10 THEN
+        v_dv_calculado := 'K';
+    ELSE
+        v_dv_calculado := TO_CHAR(v_resultado);
+    END IF;
+
+    -- 5. Compara el dígito ingresado contra el real
+    IF v_dv_ingresado != v_dv_calculado THEN
+        RAISE_APPLICATION_ERROR(-20007, 'El digito verificador del RUT es incorrecto');
+    END IF;
+END;
+/
+
 -- 5. Carga de datos iniciales
 
 -- Perfiles

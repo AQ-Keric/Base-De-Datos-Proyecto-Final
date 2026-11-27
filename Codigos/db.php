@@ -4,6 +4,7 @@ $username = "user_developer";
 $password = "evaluacion3";
 
 // Conexion a Oracle 
+//$conn = @oci_connect($username, $password, "localhost/FREEPDB1");
 $conn = @oci_connect($username, $password, "172.17.0.2/FREEPDB1");
 if (!$conn) {
     $conn = @oci_connect($username, $password, "localhost/FREEPDB1");
