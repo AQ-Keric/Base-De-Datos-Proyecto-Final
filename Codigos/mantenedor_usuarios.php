@@ -37,6 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 if (strpos($e['message'], 'unique constraint') !== false || strpos($e['message'], 'ORA-00001') !== false) {
                     $mensaje = "Error: El correo electronico ya esta registrado.";
                 } else {
+                    // $mensaje = "Error al crear usuario: " . $e['message'];
                     $mensaje = "Error: " . mensaje_error($e['message']);
                 }
             }
@@ -66,6 +67,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             } else {
                 $e = oci_error($stmt);
                 $error_ocurrido = true;
+                // $mensaje = "Error al actualizar usuario: " . $e['message'];
                 $mensaje = "Error: " . mensaje_error($e['message']);
             }
             oci_free_statement($stmt);
@@ -88,6 +90,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             } else {
                 $e = oci_error($stmt);
                 $error_ocurrido = true;
+                // $mensaje = "Error al eliminar: " . $e['message'];
                 $mensaje = "Error: " . mensaje_error($e['message']);
             }
             oci_free_statement($stmt);

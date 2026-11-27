@@ -9,9 +9,6 @@ require 'db.php';
 $mensaje = "";
 $error_ocurrido = false;
 
-// Proveedores
-$proveedores = consultar_cursor($conn, 'CA_EA_ST_IY_SP_CRUD_LISTAR_PROVEEDORES');
-
 // Guardar cambios
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $accion = $_POST['accion'] ?? '';
@@ -86,9 +83,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
         @oci_free_statement($stmt);
     }
+
+    header('Location: mantenedor_insumos.php?mensaje=' . urlencode($mensaje) . '&error=' . ($error_ocurrido ? '1' : '0'));
+    exit;
 }
 
-// Listado
+if (isset($_GET['mensaje'])) {
+    $mensaje = $_GET['mensaje'];
+    $error_ocurrido = ($_GET['error'] ?? '0') == '1';
+}
+
+// Proveedores y Listado
+$proveedores = consultar_cursor($conn, 'CA_EA_ST_IY_SP_CRUD_LISTAR_PROVEEDORES');
 $insumos_list = consultar_cursor($conn, 'CA_EA_ST_IY_SP_CRUD_LISTAR_INSUMOS');
 ?>
 
@@ -112,7 +118,7 @@ $insumos_list = consultar_cursor($conn, 'CA_EA_ST_IY_SP_CRUD_LISTAR_INSUMOS');
 
         <?php if ($mensaje): ?>
             <div class="alert alert-<?php echo $error_ocurrido ? 'danger' : 'success'; ?> alert-dismissible fade show" role="alert">
-                <?php echo $mensaje; ?>
+                <?php echo htmlspecialchars($mensaje); ?>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         <?php endif; ?>
@@ -182,15 +188,15 @@ $insumos_list = consultar_cursor($conn, 'CA_EA_ST_IY_SP_CRUD_LISTAR_INSUMOS');
                                 ?>
                                     <tr class="<?php echo $alerta_stock ? 'table-danger' : ''; ?>">
                                         <td><?php echo $row['ID_INSUMO']; ?></td>
-                                        <td><?php echo $row['NOMBRE_INSUMO']; ?></td>
+                                        <td><?php echo htmlspecialchars($row['NOMBRE_INSUMO']); ?></td>
                                         <td>
-                                            <?php echo number_format($row['STOCK_ACTUAL'], 0, ',', '.'); ?> <?php echo $row['UNIDAD_MEDIDA']; ?>
+                                            <?php echo number_format($row['STOCK_ACTUAL'], 0, ',', '.'); ?> <?php echo htmlspecialchars($row['UNIDAD_MEDIDA']); ?>
                                             <?php if ($alerta_stock): ?>
                                                 <span class="badge bg-danger ms-2">Stock Critico</span>
                                             <?php endif; ?>
                                         </td>
                                         <td><?php echo number_format($row['STOCK_MIN'], 0, ',', '.'); ?></td>
-                                        <td><?php echo $row['PROVEEDOR'] ?? 'N/A'; ?></td>
+                                        <td><?php echo htmlspecialchars($row['PROVEEDOR'] ?? 'N/A'); ?></td>
                                         <td>
                                             <button class="btn btn-sm btn-info me-2 text-white" data-bs-toggle="modal" 
                                                     data-bs-target="#modalActualizarStock" 

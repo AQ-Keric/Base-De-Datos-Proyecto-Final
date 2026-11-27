@@ -30,6 +30,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $mensaje = "Personal guardado correctamente.";
         } else {
             $e = oci_error($stmt);
+            // $mensaje = "Error al crear personal: " . $e['message'];
             $mensaje = "Error: " . mensaje_error($e['message']);
             $error_ocurrido = true;
         }
@@ -55,6 +56,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $mensaje = "Personal actualizado correctamente.";
         } else {
             $e = oci_error($stmt);
+            // $mensaje = "Error al actualizar personal: " . $e['message'];
             $mensaje = "Error: " . mensaje_error($e['message']);
             $error_ocurrido = true;
         }
@@ -75,6 +77,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if ($e['code'] == 2292) {
                 $mensaje = "Error: El personal ID $id_personal no puede ser eliminado porque tiene registros historicos asociados.";
             } else {
+                // $mensaje = "Error al eliminar personal: " . $e['message'];
                 $mensaje = "Error: " . mensaje_error($e['message']);
             }
             $error_ocurrido = true;

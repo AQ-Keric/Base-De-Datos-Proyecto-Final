@@ -1,12 +1,15 @@
+
 <?php
 $username = "user_developer";
 $password = "evaluacion3";
 
+// Conexion a Oracle 
+// $conn = @oci_connect($username, $password, "localhost/FREEPDB1");
+// //$conn = @oci_connect($username, $password, "172.17.0.2/FREEPDB1");
 $conn = @oci_connect($username, $password, "172.17.0.2/FREEPDB1");
 if (!$conn) {
     $conn = @oci_connect($username, $password, "localhost/FREEPDB1");
 }
-
 
 // esto sirve para q cargue ma rapido
 // $conn_string = "localhost/FREEPDB1"; 
@@ -39,3 +42,4 @@ function mensaje_error($errorMensaje) {
     }
     return "Ocurrió un error al guardar los datos. Verifica la información ingresada.";
 }
+?>
