@@ -33,7 +33,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             } else {
                 $e = oci_error($stmt);
                 $error_ocurrido = true;
-                $mensaje = "Error al crear cliente: " . $e['message'];
+                $mensaje = "Error: " . mensaje_error($e['message']);
             }
             oci_free_statement($stmt);
         }
@@ -61,7 +61,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             } else {
                 $e = oci_error($stmt);
                 $error_ocurrido = true;
-                $mensaje = "Error al actualizar cliente: " . $e['message'];
+                $mensaje = "Error: " . mensaje_error($e['message']);
             }
             oci_free_statement($stmt);
         }
@@ -81,7 +81,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if (strpos($e['message'], 'integrity constraint') !== false) {
                 $mensaje = "Error: No se puede eliminar el cliente porque tiene pedidos asociados.";
             } else {
-                $mensaje = "Error al eliminar: " . $e['message'];
+                $mensaje = "Error: " . mensaje_error($e['message']);
             }
         }
         oci_free_statement($stmt);

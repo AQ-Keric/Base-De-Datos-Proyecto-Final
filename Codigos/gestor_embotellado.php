@@ -36,7 +36,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         } else {
             $e = oci_error($stmt);
             $error_ocurrido = true;
-            $mensaje = "Error al embotellar: " . $e['message'];
+            $mensaje = "Error: " . mensaje_error($e['message']);
 
             if (strpos($e['message'], 'constraint') !== false) {
                  $mensaje = "Error: El lote no tiene suficientes litros para producir esa cantidad de botellas.";

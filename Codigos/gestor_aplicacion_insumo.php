@@ -39,7 +39,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         } else {
             $e = oci_error($stmt);
             $error_ocurrido = true;
-            $mensaje = "Error al aplicar insumo: " . $e['message'];
+            $mensaje = "Error: " . mensaje_error($e['message']);
 
             if (strpos($e['message'], 'check constraint') !== false) {
                  $mensaje = "Error: La cantidad utilizada excede el stock actual del insumo.";

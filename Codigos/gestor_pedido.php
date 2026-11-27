@@ -35,7 +35,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         } else {
             $e = oci_error($stmt);
             $error_ocurrido = true;
-            $mensaje = "Error al crear pedido: " . $e['message'];
+            $mensaje = "Error: " . mensaje_error($e['message']);
         }
         oci_free_statement($stmt);
     }

@@ -1,14 +1,16 @@
-
 <?php
 $username = "user_developer";
 $password = "evaluacion3";
 
-// Conexion a Oracle 
-//$conn = @oci_connect($username, $password, "localhost/FREEPDB1");
 $conn = @oci_connect($username, $password, "172.17.0.2/FREEPDB1");
 if (!$conn) {
     $conn = @oci_connect($username, $password, "localhost/FREEPDB1");
 }
+
+
+// esto sirve para q cargue ma rapido
+// $conn_string = "localhost/FREEPDB1"; 
+// $conn = @oci_pconnect($username, $password, $conn_string, 'AL32UTF8');
 
 if (!$conn) {
     $e = oci_error();
@@ -30,4 +32,10 @@ function consultar_cursor($conn, $sp_name) {
     oci_free_statement($cursor);
     return $datos;
 }
-?>
+
+function mensaje_error($errorMensaje) {
+    if (preg_match_all('/ORA-20\d{3}:\s*(.+?)(?=\s*ORA-\d{5}:|\r|\n|$)/', $errorMensaje, $matches)) {
+        return trim(end($matches[1]));
+    }
+    return "Ocurrió un error al guardar los datos. Verifica la información ingresada.";
+}
