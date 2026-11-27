@@ -101,6 +101,7 @@ $insumos_list = consultar_cursor($conn, 'CA_EA_ST_IY_SP_CRUD_LISTAR_INSUMOS');
     <style>
         .card-header-custom { background-color: #3C6382; color: white; }
     </style>
+    <link href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" rel="stylesheet">
 </head>
 <body>
     <div class="container mt-5">
@@ -270,6 +271,21 @@ $insumos_list = consultar_cursor($conn, 'CA_EA_ST_IY_SP_CRUD_LISTAR_INSUMOS');
       inputId.value = id;
       inputCantidad.value = stock; 
     });
+    </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('table.table').each(function () {
+                if ($(this).find('tbody td[colspan]').length === 0) {
+                    $(this).DataTable({
+                        pageLength: 10,
+                        language: { url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/es-ES.json' }
+                    });
+                }
+            });
+        });
     </script>
 </body>
 </html>

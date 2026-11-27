@@ -1,0 +1,2345 @@
+{
+  "_type": "Project",
+  "_id": "AAAAAA48C74931D8",
+  "name": "Vina_Santa_Carolina_3FN",
+  "ownedElements": [
+    {
+      "_type": "ERDDataModel",
+      "_id": "AAAAAA8549CD0D30",
+      "_parent": {
+        "$ref": "AAAAAA48C74931D8"
+      },
+      "name": "Modelo_Relacional_3FN",
+      "ownedElements": [
+        {
+          "_type": "ERDDiagram",
+          "_id": "AAAAAA1DEAE0FBE8",
+          "_parent": {
+            "$ref": "AAAAAA8549CD0D30"
+          },
+          "name": "Diagrama_3FN",
+          "ownedViews": [
+            {
+              "_type": "ERDEntityView",
+              "_id": "AAAAAA072BE54CF9",
+              "_parent": {
+                "$ref": "AAAAAA1DEAE0FBE8"
+              },
+              "model": {
+                "$ref": "AAAAAAA7E5AC763C"
+              },
+              "left": 60,
+              "top": 60,
+              "width": 270,
+              "height": 76
+            },
+            {
+              "_type": "ERDEntityView",
+              "_id": "AAAAAA30989474F5",
+              "_parent": {
+                "$ref": "AAAAAA1DEAE0FBE8"
+              },
+              "model": {
+                "$ref": "AAAAAA1A6BFC7F2F"
+              },
+              "left": 400,
+              "top": 60,
+              "width": 270,
+              "height": 130
+            },
+            {
+              "_type": "ERDEntityView",
+              "_id": "AAAAAAAEF7DAC58F",
+              "_parent": {
+                "$ref": "AAAAAA1DEAE0FBE8"
+              },
+              "model": {
+                "$ref": "AAAAAA4F831F2FE5"
+              },
+              "left": 740,
+              "top": 60,
+              "width": 270,
+              "height": 76
+            },
+            {
+              "_type": "ERDEntityView",
+              "_id": "AAAAAA643FC9CE7B",
+              "_parent": {
+                "$ref": "AAAAAA1DEAE0FBE8"
+              },
+              "model": {
+                "$ref": "AAAAAAB81029D906"
+              },
+              "left": 1080,
+              "top": 60,
+              "width": 270,
+              "height": 148
+            },
+            {
+              "_type": "ERDEntityView",
+              "_id": "AAAAAA77F89C0355",
+              "_parent": {
+                "$ref": "AAAAAA1DEAE0FBE8"
+              },
+              "model": {
+                "$ref": "AAAAAA47E9748EB4"
+              },
+              "left": 1420,
+              "top": 60,
+              "width": 270,
+              "height": 76
+            },
+            {
+              "_type": "ERDEntityView",
+              "_id": "AAAAAA3546A5227D",
+              "_parent": {
+                "$ref": "AAAAAA1DEAE0FBE8"
+              },
+              "model": {
+                "$ref": "AAAAAACDB4F24EDA"
+              },
+              "left": 60,
+              "top": 320,
+              "width": 270,
+              "height": 112
+            },
+            {
+              "_type": "ERDEntityView",
+              "_id": "AAAAAA45E6823D08",
+              "_parent": {
+                "$ref": "AAAAAA1DEAE0FBE8"
+              },
+              "model": {
+                "$ref": "AAAAAA145CB64A6B"
+              },
+              "left": 400,
+              "top": 320,
+              "width": 270,
+              "height": 112
+            },
+            {
+              "_type": "ERDEntityView",
+              "_id": "AAAAAA71D4871B4E",
+              "_parent": {
+                "$ref": "AAAAAA1DEAE0FBE8"
+              },
+              "model": {
+                "$ref": "AAAAAA75C73037C1"
+              },
+              "left": 740,
+              "top": 320,
+              "width": 270,
+              "height": 94
+            },
+            {
+              "_type": "ERDEntityView",
+              "_id": "AAAAAA1B1BDA5C66",
+              "_parent": {
+                "$ref": "AAAAAA1DEAE0FBE8"
+              },
+              "model": {
+                "$ref": "AAAAAA4ECB38BFAC"
+              },
+              "left": 1080,
+              "top": 320,
+              "width": 270,
+              "height": 166
+            },
+            {
+              "_type": "ERDEntityView",
+              "_id": "AAAAAAFB9362C648",
+              "_parent": {
+                "$ref": "AAAAAA1DEAE0FBE8"
+              },
+              "model": {
+                "$ref": "AAAAAA1CD6240EF7"
+              },
+              "left": 1420,
+              "top": 320,
+              "width": 270,
+              "height": 112
+            },
+            {
+              "_type": "ERDEntityView",
+              "_id": "AAAAAA502A748661",
+              "_parent": {
+                "$ref": "AAAAAA1DEAE0FBE8"
+              },
+              "model": {
+                "$ref": "AAAAAAE624B518AB"
+              },
+              "left": 60,
+              "top": 580,
+              "width": 270,
+              "height": 130
+            },
+            {
+              "_type": "ERDEntityView",
+              "_id": "AAAAAA69F5E59110",
+              "_parent": {
+                "$ref": "AAAAAA1DEAE0FBE8"
+              },
+              "model": {
+                "$ref": "AAAAAA15AD5D0645"
+              },
+              "left": 400,
+              "top": 580,
+              "width": 270,
+              "height": 166
+            },
+            {
+              "_type": "ERDEntityView",
+              "_id": "AAAAAA999293E3A3",
+              "_parent": {
+                "$ref": "AAAAAA1DEAE0FBE8"
+              },
+              "model": {
+                "$ref": "AAAAAA3F74714614"
+              },
+              "left": 740,
+              "top": 580,
+              "width": 270,
+              "height": 166
+            },
+            {
+              "_type": "ERDEntityView",
+              "_id": "AAAAAAFB8DDC8664",
+              "_parent": {
+                "$ref": "AAAAAA1DEAE0FBE8"
+              },
+              "model": {
+                "$ref": "AAAAAAEF311FA53C"
+              },
+              "left": 1080,
+              "top": 580,
+              "width": 270,
+              "height": 184
+            },
+            {
+              "_type": "ERDEntityView",
+              "_id": "AAAAAA9D6EB6C97B",
+              "_parent": {
+                "$ref": "AAAAAA1DEAE0FBE8"
+              },
+              "model": {
+                "$ref": "AAAAAA6D3678D1C2"
+              },
+              "left": 1420,
+              "top": 580,
+              "width": 270,
+              "height": 130
+            },
+            {
+              "_type": "ERDEntityView",
+              "_id": "AAAAAA889FB676C5",
+              "_parent": {
+                "$ref": "AAAAAA1DEAE0FBE8"
+              },
+              "model": {
+                "$ref": "AAAAAA0A6271F423"
+              },
+              "left": 60,
+              "top": 840,
+              "width": 270,
+              "height": 112
+            },
+            {
+              "_type": "ERDEntityView",
+              "_id": "AAAAAA8DC6B8A757",
+              "_parent": {
+                "$ref": "AAAAAA1DEAE0FBE8"
+              },
+              "model": {
+                "$ref": "AAAAAAEC9788BEFB"
+              },
+              "left": 400,
+              "top": 840,
+              "width": 270,
+              "height": 130
+            },
+            {
+              "_type": "ERDEntityView",
+              "_id": "AAAAAAB8B0D3051E",
+              "_parent": {
+                "$ref": "AAAAAA1DEAE0FBE8"
+              },
+              "model": {
+                "$ref": "AAAAAA8769827B5B"
+              },
+              "left": 740,
+              "top": 840,
+              "width": 270,
+              "height": 166
+            },
+            {
+              "_type": "ERDRelationshipView",
+              "_id": "AAAAAAA772DCE000",
+              "_parent": {
+                "$ref": "AAAAAA1DEAE0FBE8"
+              },
+              "model": {
+                "$ref": "AAAAAAA7F16DA9C5"
+              },
+              "head": {
+                "$ref": "AAAAAA30989474F5"
+              },
+              "tail": {
+                "$ref": "AAAAAA072BE54CF9"
+              },
+              "lineStyle": 1,
+              "points": "195:98;535:125"
+            },
+            {
+              "_type": "ERDRelationshipView",
+              "_id": "AAAAAA2111B1187A",
+              "_parent": {
+                "$ref": "AAAAAA1DEAE0FBE8"
+              },
+              "model": {
+                "$ref": "AAAAAA57210A14A7"
+              },
+              "head": {
+                "$ref": "AAAAAA643FC9CE7B"
+              },
+              "tail": {
+                "$ref": "AAAAAAAEF7DAC58F"
+              },
+              "lineStyle": 1,
+              "points": "875:98;1215:134"
+            },
+            {
+              "_type": "ERDRelationshipView",
+              "_id": "AAAAAAFA099606FA",
+              "_parent": {
+                "$ref": "AAAAAA1DEAE0FBE8"
+              },
+              "model": {
+                "$ref": "AAAAAA7062814ECC"
+              },
+              "head": {
+                "$ref": "AAAAAA3546A5227D"
+              },
+              "tail": {
+                "$ref": "AAAAAA77F89C0355"
+              },
+              "lineStyle": 1,
+              "points": "1555:98;195:376"
+            },
+            {
+              "_type": "ERDRelationshipView",
+              "_id": "AAAAAA67B3592CC3",
+              "_parent": {
+                "$ref": "AAAAAA1DEAE0FBE8"
+              },
+              "model": {
+                "$ref": "AAAAAADFCC818DD7"
+              },
+              "head": {
+                "$ref": "AAAAAA1B1BDA5C66"
+              },
+              "tail": {
+                "$ref": "AAAAAA71D4871B4E"
+              },
+              "lineStyle": 1,
+              "points": "875:367;1215:403"
+            },
+            {
+              "_type": "ERDRelationshipView",
+              "_id": "AAAAAAF50B12D6BD",
+              "_parent": {
+                "$ref": "AAAAAA1DEAE0FBE8"
+              },
+              "model": {
+                "$ref": "AAAAAAC581C2C3D4"
+              },
+              "head": {
+                "$ref": "AAAAAA502A748661"
+              },
+              "tail": {
+                "$ref": "AAAAAA3546A5227D"
+              },
+              "lineStyle": 1,
+              "points": "195:376;195:645"
+            },
+            {
+              "_type": "ERDRelationshipView",
+              "_id": "AAAAAAD6E2B8E79E",
+              "_parent": {
+                "$ref": "AAAAAA1DEAE0FBE8"
+              },
+              "model": {
+                "$ref": "AAAAAA4453B9A344"
+              },
+              "head": {
+                "$ref": "AAAAAA502A748661"
+              },
+              "tail": {
+                "$ref": "AAAAAA643FC9CE7B"
+              },
+              "lineStyle": 1,
+              "points": "1215:134;195:645"
+            },
+            {
+              "_type": "ERDRelationshipView",
+              "_id": "AAAAAA1F33D5653F",
+              "_parent": {
+                "$ref": "AAAAAA1DEAE0FBE8"
+              },
+              "model": {
+                "$ref": "AAAAAA111CE883FE"
+              },
+              "head": {
+                "$ref": "AAAAAA69F5E59110"
+              },
+              "tail": {
+                "$ref": "AAAAAA502A748661"
+              },
+              "lineStyle": 1,
+              "points": "195:645;535:663"
+            },
+            {
+              "_type": "ERDRelationshipView",
+              "_id": "AAAAAAF37F7B1299",
+              "_parent": {
+                "$ref": "AAAAAA1DEAE0FBE8"
+              },
+              "model": {
+                "$ref": "AAAAAA692A718594"
+              },
+              "head": {
+                "$ref": "AAAAAA69F5E59110"
+              },
+              "tail": {
+                "$ref": "AAAAAA45E6823D08"
+              },
+              "lineStyle": 1,
+              "points": "535:376;535:663"
+            },
+            {
+              "_type": "ERDRelationshipView",
+              "_id": "AAAAAAB778CA941B",
+              "_parent": {
+                "$ref": "AAAAAA1DEAE0FBE8"
+              },
+              "model": {
+                "$ref": "AAAAAAEBD8D085BD"
+              },
+              "head": {
+                "$ref": "AAAAAA999293E3A3"
+              },
+              "tail": {
+                "$ref": "AAAAAA69F5E59110"
+              },
+              "lineStyle": 1,
+              "points": "535:663;875:663"
+            },
+            {
+              "_type": "ERDRelationshipView",
+              "_id": "AAAAAAD9BEA0ECAA",
+              "_parent": {
+                "$ref": "AAAAAA1DEAE0FBE8"
+              },
+              "model": {
+                "$ref": "AAAAAAC18F8DDF32"
+              },
+              "head": {
+                "$ref": "AAAAAA999293E3A3"
+              },
+              "tail": {
+                "$ref": "AAAAAA1B1BDA5C66"
+              },
+              "lineStyle": 1,
+              "points": "1215:403;875:663"
+            },
+            {
+              "_type": "ERDRelationshipView",
+              "_id": "AAAAAA0837440CC3",
+              "_parent": {
+                "$ref": "AAAAAA1DEAE0FBE8"
+              },
+              "model": {
+                "$ref": "AAAAAAFDEA67E850"
+              },
+              "head": {
+                "$ref": "AAAAAA999293E3A3"
+              },
+              "tail": {
+                "$ref": "AAAAAA643FC9CE7B"
+              },
+              "lineStyle": 1,
+              "points": "1215:134;875:663"
+            },
+            {
+              "_type": "ERDRelationshipView",
+              "_id": "AAAAAA1CCEB6FA0D",
+              "_parent": {
+                "$ref": "AAAAAA1DEAE0FBE8"
+              },
+              "model": {
+                "$ref": "AAAAAAE419B97DA9"
+              },
+              "head": {
+                "$ref": "AAAAAAFB8DDC8664"
+              },
+              "tail": {
+                "$ref": "AAAAAAFB9362C648"
+              },
+              "lineStyle": 1,
+              "points": "1555:376;1215:672"
+            },
+            {
+              "_type": "ERDRelationshipView",
+              "_id": "AAAAAAE039163F2A",
+              "_parent": {
+                "$ref": "AAAAAA1DEAE0FBE8"
+              },
+              "model": {
+                "$ref": "AAAAAA0D7EA08968"
+              },
+              "head": {
+                "$ref": "AAAAAAFB8DDC8664"
+              },
+              "tail": {
+                "$ref": "AAAAAA69F5E59110"
+              },
+              "lineStyle": 1,
+              "points": "535:663;1215:672"
+            },
+            {
+              "_type": "ERDRelationshipView",
+              "_id": "AAAAAA8DE7813205",
+              "_parent": {
+                "$ref": "AAAAAA1DEAE0FBE8"
+              },
+              "model": {
+                "$ref": "AAAAAA5CD192FE9F"
+              },
+              "head": {
+                "$ref": "AAAAAAFB8DDC8664"
+              },
+              "tail": {
+                "$ref": "AAAAAA1B1BDA5C66"
+              },
+              "lineStyle": 1,
+              "points": "1215:403;1215:672"
+            },
+            {
+              "_type": "ERDRelationshipView",
+              "_id": "AAAAAA5E9182EFAB",
+              "_parent": {
+                "$ref": "AAAAAA1DEAE0FBE8"
+              },
+              "model": {
+                "$ref": "AAAAAA96DE1EECDC"
+              },
+              "head": {
+                "$ref": "AAAAAA889FB676C5"
+              },
+              "tail": {
+                "$ref": "AAAAAA9D6EB6C97B"
+              },
+              "lineStyle": 1,
+              "points": "1555:645;195:896"
+            },
+            {
+              "_type": "ERDRelationshipView",
+              "_id": "AAAAAA18AC7EF171",
+              "_parent": {
+                "$ref": "AAAAAA1DEAE0FBE8"
+              },
+              "model": {
+                "$ref": "AAAAAA856683D932"
+              },
+              "head": {
+                "$ref": "AAAAAA8DC6B8A757"
+              },
+              "tail": {
+                "$ref": "AAAAAA889FB676C5"
+              },
+              "lineStyle": 1,
+              "points": "195:896;535:905"
+            },
+            {
+              "_type": "ERDRelationshipView",
+              "_id": "AAAAAA54C1D28EDB",
+              "_parent": {
+                "$ref": "AAAAAA1DEAE0FBE8"
+              },
+              "model": {
+                "$ref": "AAAAAA730C269E4D"
+              },
+              "head": {
+                "$ref": "AAAAAA8DC6B8A757"
+              },
+              "tail": {
+                "$ref": "AAAAAAFB9362C648"
+              },
+              "lineStyle": 1,
+              "points": "1555:376;535:905"
+            }
+          ]
+        },
+        {
+          "_type": "ERDEntity",
+          "_id": "AAAAAAA7E5AC763C",
+          "_parent": {
+            "$ref": "AAAAAA8549CD0D30"
+          },
+          "name": "CA_EA_ST_IY_PERFIL",
+          "columns": [
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAA5B00DA0C67",
+              "_parent": {
+                "$ref": "AAAAAAA7E5AC763C"
+              },
+              "name": "id_perfil",
+              "type": "NUMBER",
+              "primaryKey": true,
+              "foreignKey": false,
+              "nullable": false
+            },
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAACC3DF6631E",
+              "_parent": {
+                "$ref": "AAAAAAA7E5AC763C"
+              },
+              "name": "nombre_perfil",
+              "type": "VARCHAR2(50)",
+              "primaryKey": false,
+              "foreignKey": false,
+              "nullable": true
+            }
+          ],
+          "ownedElements": [
+            {
+              "_type": "ERDRelationship",
+              "_id": "AAAAAAA7F16DA9C5",
+              "_parent": {
+                "$ref": "AAAAAAA7E5AC763C"
+              },
+              "identifying": false,
+              "end1": {
+                "_type": "ERDRelationshipEnd",
+                "_id": "AAAAAA85EEB27DDE",
+                "_parent": {
+                  "$ref": "AAAAAAA7F16DA9C5"
+                },
+                "reference": {
+                  "$ref": "AAAAAAA7E5AC763C"
+                },
+                "cardinality": "1"
+              },
+              "end2": {
+                "_type": "ERDRelationshipEnd",
+                "_id": "AAAAAA8354F72093",
+                "_parent": {
+                  "$ref": "AAAAAAA7F16DA9C5"
+                },
+                "reference": {
+                  "$ref": "AAAAAA1A6BFC7F2F"
+                },
+                "cardinality": "0..*"
+              }
+            }
+          ]
+        },
+        {
+          "_type": "ERDEntity",
+          "_id": "AAAAAA1A6BFC7F2F",
+          "_parent": {
+            "$ref": "AAAAAA8549CD0D30"
+          },
+          "name": "CA_EA_ST_IY_USUARIOS",
+          "columns": [
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAAB5DF9C3C1E",
+              "_parent": {
+                "$ref": "AAAAAA1A6BFC7F2F"
+              },
+              "name": "id_usuario",
+              "type": "NUMBER",
+              "primaryKey": true,
+              "foreignKey": false,
+              "nullable": false
+            },
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAAACA9BD129B",
+              "_parent": {
+                "$ref": "AAAAAA1A6BFC7F2F"
+              },
+              "name": "id_perfil",
+              "type": "NUMBER",
+              "primaryKey": false,
+              "foreignKey": true,
+              "nullable": false
+            },
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAA6AB31B00FA",
+              "_parent": {
+                "$ref": "AAAAAA1A6BFC7F2F"
+              },
+              "name": "nombre",
+              "type": "VARCHAR2(100)",
+              "primaryKey": false,
+              "foreignKey": false,
+              "nullable": true
+            },
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAA06C5F679A6",
+              "_parent": {
+                "$ref": "AAAAAA1A6BFC7F2F"
+              },
+              "name": "password",
+              "type": "VARCHAR2(100)",
+              "primaryKey": false,
+              "foreignKey": false,
+              "nullable": true
+            },
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAA7A3E666EFE",
+              "_parent": {
+                "$ref": "AAAAAA1A6BFC7F2F"
+              },
+              "name": "email",
+              "type": "VARCHAR2(100)",
+              "primaryKey": false,
+              "foreignKey": false,
+              "nullable": true
+            }
+          ]
+        },
+        {
+          "_type": "ERDEntity",
+          "_id": "AAAAAA4F831F2FE5",
+          "_parent": {
+            "$ref": "AAAAAA8549CD0D30"
+          },
+          "name": "CA_EA_ST_IY_CARGO",
+          "columns": [
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAAA78180BBCB",
+              "_parent": {
+                "$ref": "AAAAAA4F831F2FE5"
+              },
+              "name": "id_cargo",
+              "type": "NUMBER",
+              "primaryKey": true,
+              "foreignKey": false,
+              "nullable": false
+            },
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAAFFB284654F",
+              "_parent": {
+                "$ref": "AAAAAA4F831F2FE5"
+              },
+              "name": "nombre_cargo",
+              "type": "VARCHAR2(50)",
+              "primaryKey": false,
+              "foreignKey": false,
+              "nullable": true
+            }
+          ],
+          "ownedElements": [
+            {
+              "_type": "ERDRelationship",
+              "_id": "AAAAAA57210A14A7",
+              "_parent": {
+                "$ref": "AAAAAA4F831F2FE5"
+              },
+              "identifying": false,
+              "end1": {
+                "_type": "ERDRelationshipEnd",
+                "_id": "AAAAAA3640A8255D",
+                "_parent": {
+                  "$ref": "AAAAAA57210A14A7"
+                },
+                "reference": {
+                  "$ref": "AAAAAA4F831F2FE5"
+                },
+                "cardinality": "1"
+              },
+              "end2": {
+                "_type": "ERDRelationshipEnd",
+                "_id": "AAAAAA06C55F48C1",
+                "_parent": {
+                  "$ref": "AAAAAA57210A14A7"
+                },
+                "reference": {
+                  "$ref": "AAAAAAB81029D906"
+                },
+                "cardinality": "0..*"
+              }
+            }
+          ]
+        },
+        {
+          "_type": "ERDEntity",
+          "_id": "AAAAAAB81029D906",
+          "_parent": {
+            "$ref": "AAAAAA8549CD0D30"
+          },
+          "name": "CA_EA_ST_IY_PERSONAL",
+          "columns": [
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAA3EA32808CF",
+              "_parent": {
+                "$ref": "AAAAAAB81029D906"
+              },
+              "name": "id_personal",
+              "type": "NUMBER",
+              "primaryKey": true,
+              "foreignKey": false,
+              "nullable": false
+            },
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAAC0CFDABD48",
+              "_parent": {
+                "$ref": "AAAAAAB81029D906"
+              },
+              "name": "rut",
+              "type": "VARCHAR2(12)",
+              "primaryKey": false,
+              "foreignKey": false,
+              "nullable": true
+            },
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAA4426C4DB81",
+              "_parent": {
+                "$ref": "AAAAAAB81029D906"
+              },
+              "name": "nombre",
+              "type": "VARCHAR2(50)",
+              "primaryKey": false,
+              "foreignKey": false,
+              "nullable": true
+            },
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAAB6D71C270B",
+              "_parent": {
+                "$ref": "AAAAAAB81029D906"
+              },
+              "name": "apellido1",
+              "type": "VARCHAR2(50)",
+              "primaryKey": false,
+              "foreignKey": false,
+              "nullable": true
+            },
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAAEA873836AD",
+              "_parent": {
+                "$ref": "AAAAAAB81029D906"
+              },
+              "name": "apellido2",
+              "type": "VARCHAR2(50)",
+              "primaryKey": false,
+              "foreignKey": false,
+              "nullable": true
+            },
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAA259A65E46B",
+              "_parent": {
+                "$ref": "AAAAAAB81029D906"
+              },
+              "name": "id_cargo",
+              "type": "NUMBER",
+              "primaryKey": false,
+              "foreignKey": true,
+              "nullable": false
+            }
+          ],
+          "ownedElements": [
+            {
+              "_type": "ERDRelationship",
+              "_id": "AAAAAA4453B9A344",
+              "_parent": {
+                "$ref": "AAAAAAB81029D906"
+              },
+              "identifying": false,
+              "end1": {
+                "_type": "ERDRelationshipEnd",
+                "_id": "AAAAAAB11178E4AF",
+                "_parent": {
+                  "$ref": "AAAAAA4453B9A344"
+                },
+                "reference": {
+                  "$ref": "AAAAAAB81029D906"
+                },
+                "cardinality": "1"
+              },
+              "end2": {
+                "_type": "ERDRelationshipEnd",
+                "_id": "AAAAAA194B9555B2",
+                "_parent": {
+                  "$ref": "AAAAAA4453B9A344"
+                },
+                "reference": {
+                  "$ref": "AAAAAAE624B518AB"
+                },
+                "cardinality": "0..*"
+              }
+            },
+            {
+              "_type": "ERDRelationship",
+              "_id": "AAAAAAFDEA67E850",
+              "_parent": {
+                "$ref": "AAAAAAB81029D906"
+              },
+              "identifying": false,
+              "end1": {
+                "_type": "ERDRelationshipEnd",
+                "_id": "AAAAAAFA0D3E8072",
+                "_parent": {
+                  "$ref": "AAAAAAFDEA67E850"
+                },
+                "reference": {
+                  "$ref": "AAAAAAB81029D906"
+                },
+                "cardinality": "1"
+              },
+              "end2": {
+                "_type": "ERDRelationshipEnd",
+                "_id": "AAAAAADAFC9B3D27",
+                "_parent": {
+                  "$ref": "AAAAAAFDEA67E850"
+                },
+                "reference": {
+                  "$ref": "AAAAAA3F74714614"
+                },
+                "cardinality": "0..*"
+              }
+            }
+          ]
+        },
+        {
+          "_type": "ERDEntity",
+          "_id": "AAAAAA47E9748EB4",
+          "_parent": {
+            "$ref": "AAAAAA8549CD0D30"
+          },
+          "name": "CA_EA_ST_IY_VARIEDAD_UVA",
+          "columns": [
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAA3C88545B60",
+              "_parent": {
+                "$ref": "AAAAAA47E9748EB4"
+              },
+              "name": "id_variedad",
+              "type": "NUMBER",
+              "primaryKey": true,
+              "foreignKey": false,
+              "nullable": false
+            },
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAA96FC8AE17F",
+              "_parent": {
+                "$ref": "AAAAAA47E9748EB4"
+              },
+              "name": "nombre_variedad",
+              "type": "VARCHAR2(50)",
+              "primaryKey": false,
+              "foreignKey": false,
+              "nullable": true
+            }
+          ],
+          "ownedElements": [
+            {
+              "_type": "ERDRelationship",
+              "_id": "AAAAAA7062814ECC",
+              "_parent": {
+                "$ref": "AAAAAA47E9748EB4"
+              },
+              "identifying": false,
+              "end1": {
+                "_type": "ERDRelationshipEnd",
+                "_id": "AAAAAA115887B56C",
+                "_parent": {
+                  "$ref": "AAAAAA7062814ECC"
+                },
+                "reference": {
+                  "$ref": "AAAAAA47E9748EB4"
+                },
+                "cardinality": "1"
+              },
+              "end2": {
+                "_type": "ERDRelationshipEnd",
+                "_id": "AAAAAAC8B384A491",
+                "_parent": {
+                  "$ref": "AAAAAA7062814ECC"
+                },
+                "reference": {
+                  "$ref": "AAAAAACDB4F24EDA"
+                },
+                "cardinality": "0..*"
+              }
+            }
+          ]
+        },
+        {
+          "_type": "ERDEntity",
+          "_id": "AAAAAACDB4F24EDA",
+          "_parent": {
+            "$ref": "AAAAAA8549CD0D30"
+          },
+          "name": "CA_EA_ST_IY_CUARTEL",
+          "columns": [
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAA1986C8616C",
+              "_parent": {
+                "$ref": "AAAAAACDB4F24EDA"
+              },
+              "name": "id_cuartel",
+              "type": "NUMBER",
+              "primaryKey": true,
+              "foreignKey": false,
+              "nullable": false
+            },
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAAF4DC8ABFDB",
+              "_parent": {
+                "$ref": "AAAAAACDB4F24EDA"
+              },
+              "name": "id_variedad",
+              "type": "NUMBER",
+              "primaryKey": false,
+              "foreignKey": true,
+              "nullable": false
+            },
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAA126A473777",
+              "_parent": {
+                "$ref": "AAAAAACDB4F24EDA"
+              },
+              "name": "nombre_cuartel",
+              "type": "VARCHAR2(50)",
+              "primaryKey": false,
+              "foreignKey": false,
+              "nullable": true
+            },
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAA566B4622C2",
+              "_parent": {
+                "$ref": "AAAAAACDB4F24EDA"
+              },
+              "name": "hectareas",
+              "type": "NUMBER(5,2)",
+              "primaryKey": false,
+              "foreignKey": false,
+              "nullable": true
+            }
+          ],
+          "ownedElements": [
+            {
+              "_type": "ERDRelationship",
+              "_id": "AAAAAAC581C2C3D4",
+              "_parent": {
+                "$ref": "AAAAAACDB4F24EDA"
+              },
+              "identifying": false,
+              "end1": {
+                "_type": "ERDRelationshipEnd",
+                "_id": "AAAAAA15A941B8C9",
+                "_parent": {
+                  "$ref": "AAAAAAC581C2C3D4"
+                },
+                "reference": {
+                  "$ref": "AAAAAACDB4F24EDA"
+                },
+                "cardinality": "1"
+              },
+              "end2": {
+                "_type": "ERDRelationshipEnd",
+                "_id": "AAAAAA040C6E8F93",
+                "_parent": {
+                  "$ref": "AAAAAAC581C2C3D4"
+                },
+                "reference": {
+                  "$ref": "AAAAAAE624B518AB"
+                },
+                "cardinality": "0..*"
+              }
+            }
+          ]
+        },
+        {
+          "_type": "ERDEntity",
+          "_id": "AAAAAA145CB64A6B",
+          "_parent": {
+            "$ref": "AAAAAA8549CD0D30"
+          },
+          "name": "CA_EA_ST_IY_CONTENEDORES",
+          "columns": [
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAA70E10AE07A",
+              "_parent": {
+                "$ref": "AAAAAA145CB64A6B"
+              },
+              "name": "id_contenedor",
+              "type": "NUMBER",
+              "primaryKey": true,
+              "foreignKey": false,
+              "nullable": false
+            },
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAA2643F36D12",
+              "_parent": {
+                "$ref": "AAAAAA145CB64A6B"
+              },
+              "name": "material",
+              "type": "VARCHAR2(50)",
+              "primaryKey": false,
+              "foreignKey": false,
+              "nullable": true
+            },
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAADCAB589D5A",
+              "_parent": {
+                "$ref": "AAAAAA145CB64A6B"
+              },
+              "name": "capacidad",
+              "type": "NUMBER(10,2)",
+              "primaryKey": false,
+              "foreignKey": false,
+              "nullable": true
+            },
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAA7B5CE1636A",
+              "_parent": {
+                "$ref": "AAAAAA145CB64A6B"
+              },
+              "name": "nro_usos",
+              "type": "NUMBER",
+              "primaryKey": false,
+              "foreignKey": false,
+              "nullable": true
+            }
+          ],
+          "ownedElements": [
+            {
+              "_type": "ERDRelationship",
+              "_id": "AAAAAA692A718594",
+              "_parent": {
+                "$ref": "AAAAAA145CB64A6B"
+              },
+              "identifying": false,
+              "end1": {
+                "_type": "ERDRelationshipEnd",
+                "_id": "AAAAAACC7D234C7A",
+                "_parent": {
+                  "$ref": "AAAAAA692A718594"
+                },
+                "reference": {
+                  "$ref": "AAAAAA145CB64A6B"
+                },
+                "cardinality": "1"
+              },
+              "end2": {
+                "_type": "ERDRelationshipEnd",
+                "_id": "AAAAAA46BE0291F6",
+                "_parent": {
+                  "$ref": "AAAAAA692A718594"
+                },
+                "reference": {
+                  "$ref": "AAAAAA15AD5D0645"
+                },
+                "cardinality": "0..*"
+              }
+            }
+          ]
+        },
+        {
+          "_type": "ERDEntity",
+          "_id": "AAAAAA75C73037C1",
+          "_parent": {
+            "$ref": "AAAAAA8549CD0D30"
+          },
+          "name": "CA_EA_ST_IY_PROVEEDOR",
+          "columns": [
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAAD3D66852DB",
+              "_parent": {
+                "$ref": "AAAAAA75C73037C1"
+              },
+              "name": "id_proveedor",
+              "type": "NUMBER",
+              "primaryKey": true,
+              "foreignKey": false,
+              "nullable": false
+            },
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAABB8F5C8B0C",
+              "_parent": {
+                "$ref": "AAAAAA75C73037C1"
+              },
+              "name": "rut_proveedor",
+              "type": "VARCHAR2(12)",
+              "primaryKey": false,
+              "foreignKey": false,
+              "nullable": true
+            },
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAA1487B7A755",
+              "_parent": {
+                "$ref": "AAAAAA75C73037C1"
+              },
+              "name": "razon_social",
+              "type": "VARCHAR2(100)",
+              "primaryKey": false,
+              "foreignKey": false,
+              "nullable": true
+            }
+          ],
+          "ownedElements": [
+            {
+              "_type": "ERDRelationship",
+              "_id": "AAAAAADFCC818DD7",
+              "_parent": {
+                "$ref": "AAAAAA75C73037C1"
+              },
+              "identifying": false,
+              "end1": {
+                "_type": "ERDRelationshipEnd",
+                "_id": "AAAAAA078D10A8E3",
+                "_parent": {
+                  "$ref": "AAAAAADFCC818DD7"
+                },
+                "reference": {
+                  "$ref": "AAAAAA75C73037C1"
+                },
+                "cardinality": "1"
+              },
+              "end2": {
+                "_type": "ERDRelationshipEnd",
+                "_id": "AAAAAAE8BBB9B744",
+                "_parent": {
+                  "$ref": "AAAAAADFCC818DD7"
+                },
+                "reference": {
+                  "$ref": "AAAAAA4ECB38BFAC"
+                },
+                "cardinality": "0..*"
+              }
+            }
+          ]
+        },
+        {
+          "_type": "ERDEntity",
+          "_id": "AAAAAA4ECB38BFAC",
+          "_parent": {
+            "$ref": "AAAAAA8549CD0D30"
+          },
+          "name": "CA_EA_ST_IY_INSUMOS",
+          "columns": [
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAA888A1DBD2A",
+              "_parent": {
+                "$ref": "AAAAAA4ECB38BFAC"
+              },
+              "name": "id_insumo",
+              "type": "NUMBER",
+              "primaryKey": true,
+              "foreignKey": false,
+              "nullable": false
+            },
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAA043C75B1FD",
+              "_parent": {
+                "$ref": "AAAAAA4ECB38BFAC"
+              },
+              "name": "id_proveedor",
+              "type": "NUMBER",
+              "primaryKey": false,
+              "foreignKey": true,
+              "nullable": false
+            },
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAAC9137C457A",
+              "_parent": {
+                "$ref": "AAAAAA4ECB38BFAC"
+              },
+              "name": "nombre_insumo",
+              "type": "VARCHAR2(100)",
+              "primaryKey": false,
+              "foreignKey": false,
+              "nullable": true
+            },
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAA906C361258",
+              "_parent": {
+                "$ref": "AAAAAA4ECB38BFAC"
+              },
+              "name": "stock_min",
+              "type": "NUMBER",
+              "primaryKey": false,
+              "foreignKey": false,
+              "nullable": true
+            },
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAA87B3E14CBA",
+              "_parent": {
+                "$ref": "AAAAAA4ECB38BFAC"
+              },
+              "name": "stock_max",
+              "type": "NUMBER",
+              "primaryKey": false,
+              "foreignKey": false,
+              "nullable": true
+            },
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAA9C87EC2FAB",
+              "_parent": {
+                "$ref": "AAAAAA4ECB38BFAC"
+              },
+              "name": "stock_actual",
+              "type": "NUMBER",
+              "primaryKey": false,
+              "foreignKey": false,
+              "nullable": true
+            },
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAA28F4DB0481",
+              "_parent": {
+                "$ref": "AAAAAA4ECB38BFAC"
+              },
+              "name": "unidad_medida",
+              "type": "VARCHAR2(20)",
+              "primaryKey": false,
+              "foreignKey": false,
+              "nullable": true
+            }
+          ],
+          "ownedElements": [
+            {
+              "_type": "ERDRelationship",
+              "_id": "AAAAAAC18F8DDF32",
+              "_parent": {
+                "$ref": "AAAAAA4ECB38BFAC"
+              },
+              "identifying": false,
+              "end1": {
+                "_type": "ERDRelationshipEnd",
+                "_id": "AAAAAA24E2915E3D",
+                "_parent": {
+                  "$ref": "AAAAAAC18F8DDF32"
+                },
+                "reference": {
+                  "$ref": "AAAAAA4ECB38BFAC"
+                },
+                "cardinality": "1"
+              },
+              "end2": {
+                "_type": "ERDRelationshipEnd",
+                "_id": "AAAAAAA9ED0BB521",
+                "_parent": {
+                  "$ref": "AAAAAAC18F8DDF32"
+                },
+                "reference": {
+                  "$ref": "AAAAAA3F74714614"
+                },
+                "cardinality": "0..*"
+              }
+            },
+            {
+              "_type": "ERDRelationship",
+              "_id": "AAAAAA5CD192FE9F",
+              "_parent": {
+                "$ref": "AAAAAA4ECB38BFAC"
+              },
+              "identifying": false,
+              "end1": {
+                "_type": "ERDRelationshipEnd",
+                "_id": "AAAAAA0F0ED92A53",
+                "_parent": {
+                  "$ref": "AAAAAA5CD192FE9F"
+                },
+                "reference": {
+                  "$ref": "AAAAAA4ECB38BFAC"
+                },
+                "cardinality": "1"
+              },
+              "end2": {
+                "_type": "ERDRelationshipEnd",
+                "_id": "AAAAAA9477F09908",
+                "_parent": {
+                  "$ref": "AAAAAA5CD192FE9F"
+                },
+                "reference": {
+                  "$ref": "AAAAAAEF311FA53C"
+                },
+                "cardinality": "0..*"
+              }
+            }
+          ]
+        },
+        {
+          "_type": "ERDEntity",
+          "_id": "AAAAAA1CD6240EF7",
+          "_parent": {
+            "$ref": "AAAAAA8549CD0D30"
+          },
+          "name": "CA_EA_ST_IY_PRODUCTOS",
+          "columns": [
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAADC4216A689",
+              "_parent": {
+                "$ref": "AAAAAA1CD6240EF7"
+              },
+              "name": "id_producto",
+              "type": "NUMBER",
+              "primaryKey": true,
+              "foreignKey": false,
+              "nullable": false
+            },
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAA7EF0151AA0",
+              "_parent": {
+                "$ref": "AAAAAA1CD6240EF7"
+              },
+              "name": "nombre_prod",
+              "type": "VARCHAR2(100)",
+              "primaryKey": false,
+              "foreignKey": false,
+              "nullable": true
+            },
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAAB4A34A334D",
+              "_parent": {
+                "$ref": "AAAAAA1CD6240EF7"
+              },
+              "name": "stock",
+              "type": "NUMBER",
+              "primaryKey": false,
+              "foreignKey": false,
+              "nullable": true
+            },
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAA32A94FD7A9",
+              "_parent": {
+                "$ref": "AAAAAA1CD6240EF7"
+              },
+              "name": "precio",
+              "type": "NUMBER(10,2)",
+              "primaryKey": false,
+              "foreignKey": false,
+              "nullable": true
+            }
+          ],
+          "ownedElements": [
+            {
+              "_type": "ERDRelationship",
+              "_id": "AAAAAAE419B97DA9",
+              "_parent": {
+                "$ref": "AAAAAA1CD6240EF7"
+              },
+              "identifying": false,
+              "end1": {
+                "_type": "ERDRelationshipEnd",
+                "_id": "AAAAAA32EF248203",
+                "_parent": {
+                  "$ref": "AAAAAAE419B97DA9"
+                },
+                "reference": {
+                  "$ref": "AAAAAA1CD6240EF7"
+                },
+                "cardinality": "1"
+              },
+              "end2": {
+                "_type": "ERDRelationshipEnd",
+                "_id": "AAAAAAFDD1963BDD",
+                "_parent": {
+                  "$ref": "AAAAAAE419B97DA9"
+                },
+                "reference": {
+                  "$ref": "AAAAAAEF311FA53C"
+                },
+                "cardinality": "0..*"
+              }
+            },
+            {
+              "_type": "ERDRelationship",
+              "_id": "AAAAAA730C269E4D",
+              "_parent": {
+                "$ref": "AAAAAA1CD6240EF7"
+              },
+              "identifying": false,
+              "end1": {
+                "_type": "ERDRelationshipEnd",
+                "_id": "AAAAAA38CE97F0AD",
+                "_parent": {
+                  "$ref": "AAAAAA730C269E4D"
+                },
+                "reference": {
+                  "$ref": "AAAAAA1CD6240EF7"
+                },
+                "cardinality": "1"
+              },
+              "end2": {
+                "_type": "ERDRelationshipEnd",
+                "_id": "AAAAAABC62A45732",
+                "_parent": {
+                  "$ref": "AAAAAA730C269E4D"
+                },
+                "reference": {
+                  "$ref": "AAAAAAEC9788BEFB"
+                },
+                "cardinality": "0..*"
+              }
+            }
+          ]
+        },
+        {
+          "_type": "ERDEntity",
+          "_id": "AAAAAAE624B518AB",
+          "_parent": {
+            "$ref": "AAAAAA8549CD0D30"
+          },
+          "name": "CA_EA_ST_IY_RECEPCION_COSECHA",
+          "columns": [
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAA8E305D0D5D",
+              "_parent": {
+                "$ref": "AAAAAAE624B518AB"
+              },
+              "name": "id_cosecha",
+              "type": "NUMBER",
+              "primaryKey": true,
+              "foreignKey": false,
+              "nullable": false
+            },
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAA545811F338",
+              "_parent": {
+                "$ref": "AAAAAAE624B518AB"
+              },
+              "name": "id_cuartel",
+              "type": "NUMBER",
+              "primaryKey": false,
+              "foreignKey": true,
+              "nullable": false
+            },
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAA6A52AD18AB",
+              "_parent": {
+                "$ref": "AAAAAAE624B518AB"
+              },
+              "name": "id_personal",
+              "type": "NUMBER",
+              "primaryKey": false,
+              "foreignKey": true,
+              "nullable": false
+            },
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAA428F37F4AB",
+              "_parent": {
+                "$ref": "AAAAAAE624B518AB"
+              },
+              "name": "fecha",
+              "type": "DATE",
+              "primaryKey": false,
+              "foreignKey": false,
+              "nullable": true
+            },
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAA83C165549C",
+              "_parent": {
+                "$ref": "AAAAAAE624B518AB"
+              },
+              "name": "kilos",
+              "type": "NUMBER(10,2)",
+              "primaryKey": false,
+              "foreignKey": false,
+              "nullable": true
+            }
+          ],
+          "ownedElements": [
+            {
+              "_type": "ERDRelationship",
+              "_id": "AAAAAA111CE883FE",
+              "_parent": {
+                "$ref": "AAAAAAE624B518AB"
+              },
+              "identifying": false,
+              "end1": {
+                "_type": "ERDRelationshipEnd",
+                "_id": "AAAAAAEEF382B8CE",
+                "_parent": {
+                  "$ref": "AAAAAA111CE883FE"
+                },
+                "reference": {
+                  "$ref": "AAAAAAE624B518AB"
+                },
+                "cardinality": "1"
+              },
+              "end2": {
+                "_type": "ERDRelationshipEnd",
+                "_id": "AAAAAA0667C72173",
+                "_parent": {
+                  "$ref": "AAAAAA111CE883FE"
+                },
+                "reference": {
+                  "$ref": "AAAAAA15AD5D0645"
+                },
+                "cardinality": "0..*"
+              }
+            }
+          ]
+        },
+        {
+          "_type": "ERDEntity",
+          "_id": "AAAAAA15AD5D0645",
+          "_parent": {
+            "$ref": "AAAAAA8549CD0D30"
+          },
+          "name": "CA_EA_ST_IY_LOTE",
+          "columns": [
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAA435CF59F61",
+              "_parent": {
+                "$ref": "AAAAAA15AD5D0645"
+              },
+              "name": "id_lote",
+              "type": "NUMBER",
+              "primaryKey": true,
+              "foreignKey": false,
+              "nullable": false
+            },
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAAF2C27C76DB",
+              "_parent": {
+                "$ref": "AAAAAA15AD5D0645"
+              },
+              "name": "id_cosecha",
+              "type": "NUMBER",
+              "primaryKey": false,
+              "foreignKey": true,
+              "nullable": false
+            },
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAA279391B8A8",
+              "_parent": {
+                "$ref": "AAAAAA15AD5D0645"
+              },
+              "name": "litros_actuales",
+              "type": "NUMBER(10,2)",
+              "primaryKey": false,
+              "foreignKey": false,
+              "nullable": true
+            },
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAAEF615D8328",
+              "_parent": {
+                "$ref": "AAAAAA15AD5D0645"
+              },
+              "name": "estado",
+              "type": "VARCHAR2(50)",
+              "primaryKey": false,
+              "foreignKey": false,
+              "nullable": true
+            },
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAA8C2C0D42B3",
+              "_parent": {
+                "$ref": "AAAAAA15AD5D0645"
+              },
+              "name": "ubicacion",
+              "type": "VARCHAR2(100)",
+              "primaryKey": false,
+              "foreignKey": false,
+              "nullable": true
+            },
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAAA2971483A0",
+              "_parent": {
+                "$ref": "AAAAAA15AD5D0645"
+              },
+              "name": "id_contenedor",
+              "type": "NUMBER",
+              "primaryKey": false,
+              "foreignKey": true,
+              "nullable": false
+            },
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAA5CE5E95B9C",
+              "_parent": {
+                "$ref": "AAAAAA15AD5D0645"
+              },
+              "name": "fecha_ingreso",
+              "type": "DATE",
+              "primaryKey": false,
+              "foreignKey": false,
+              "nullable": true
+            }
+          ],
+          "ownedElements": [
+            {
+              "_type": "ERDRelationship",
+              "_id": "AAAAAAEBD8D085BD",
+              "_parent": {
+                "$ref": "AAAAAA15AD5D0645"
+              },
+              "identifying": false,
+              "end1": {
+                "_type": "ERDRelationshipEnd",
+                "_id": "AAAAAAE2C09BBDBC",
+                "_parent": {
+                  "$ref": "AAAAAAEBD8D085BD"
+                },
+                "reference": {
+                  "$ref": "AAAAAA15AD5D0645"
+                },
+                "cardinality": "1"
+              },
+              "end2": {
+                "_type": "ERDRelationshipEnd",
+                "_id": "AAAAAAFD9A8F964F",
+                "_parent": {
+                  "$ref": "AAAAAAEBD8D085BD"
+                },
+                "reference": {
+                  "$ref": "AAAAAA3F74714614"
+                },
+                "cardinality": "0..*"
+              }
+            },
+            {
+              "_type": "ERDRelationship",
+              "_id": "AAAAAA0D7EA08968",
+              "_parent": {
+                "$ref": "AAAAAA15AD5D0645"
+              },
+              "identifying": false,
+              "end1": {
+                "_type": "ERDRelationshipEnd",
+                "_id": "AAAAAA0CF989F3E0",
+                "_parent": {
+                  "$ref": "AAAAAA0D7EA08968"
+                },
+                "reference": {
+                  "$ref": "AAAAAA15AD5D0645"
+                },
+                "cardinality": "1"
+              },
+              "end2": {
+                "_type": "ERDRelationshipEnd",
+                "_id": "AAAAAA1AE47CDBBD",
+                "_parent": {
+                  "$ref": "AAAAAA0D7EA08968"
+                },
+                "reference": {
+                  "$ref": "AAAAAAEF311FA53C"
+                },
+                "cardinality": "0..*"
+              }
+            }
+          ]
+        },
+        {
+          "_type": "ERDEntity",
+          "_id": "AAAAAA3F74714614",
+          "_parent": {
+            "$ref": "AAAAAA8549CD0D30"
+          },
+          "name": "CA_EA_ST_IY_APLICACION_INSUMOS",
+          "columns": [
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAA96FC466E9B",
+              "_parent": {
+                "$ref": "AAAAAA3F74714614"
+              },
+              "name": "id_aplicacion",
+              "type": "NUMBER",
+              "primaryKey": true,
+              "foreignKey": false,
+              "nullable": false
+            },
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAA3A5A87F658",
+              "_parent": {
+                "$ref": "AAAAAA3F74714614"
+              },
+              "name": "id_lote",
+              "type": "NUMBER",
+              "primaryKey": false,
+              "foreignKey": true,
+              "nullable": false
+            },
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAA70BF976E8C",
+              "_parent": {
+                "$ref": "AAAAAA3F74714614"
+              },
+              "name": "id_insumo",
+              "type": "NUMBER",
+              "primaryKey": false,
+              "foreignKey": true,
+              "nullable": false
+            },
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAA6CEDCD016A",
+              "_parent": {
+                "$ref": "AAAAAA3F74714614"
+              },
+              "name": "id_personal",
+              "type": "NUMBER",
+              "primaryKey": false,
+              "foreignKey": true,
+              "nullable": false
+            },
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAAB6A971E4F2",
+              "_parent": {
+                "$ref": "AAAAAA3F74714614"
+              },
+              "name": "fecha_aplicacion",
+              "type": "DATE",
+              "primaryKey": false,
+              "foreignKey": false,
+              "nullable": true
+            },
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAABE7854862B",
+              "_parent": {
+                "$ref": "AAAAAA3F74714614"
+              },
+              "name": "cantidad_usada",
+              "type": "NUMBER(10,2)",
+              "primaryKey": false,
+              "foreignKey": false,
+              "nullable": true
+            },
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAA2C407D7891",
+              "_parent": {
+                "$ref": "AAAAAA3F74714614"
+              },
+              "name": "motivo_uso",
+              "type": "VARCHAR2(200)",
+              "primaryKey": false,
+              "foreignKey": false,
+              "nullable": true
+            }
+          ]
+        },
+        {
+          "_type": "ERDEntity",
+          "_id": "AAAAAAEF311FA53C",
+          "_parent": {
+            "$ref": "AAAAAA8549CD0D30"
+          },
+          "name": "CA_EA_ST_IY_EMBOTELLADO",
+          "columns": [
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAA9ED506D5BE",
+              "_parent": {
+                "$ref": "AAAAAAEF311FA53C"
+              },
+              "name": "id_embotellado",
+              "type": "NUMBER",
+              "primaryKey": true,
+              "foreignKey": false,
+              "nullable": false
+            },
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAA91E753C466",
+              "_parent": {
+                "$ref": "AAAAAAEF311FA53C"
+              },
+              "name": "id_producto",
+              "type": "NUMBER",
+              "primaryKey": false,
+              "foreignKey": true,
+              "nullable": false
+            },
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAA430F3E1B74",
+              "_parent": {
+                "$ref": "AAAAAAEF311FA53C"
+              },
+              "name": "fecha_embotellado",
+              "type": "DATE",
+              "primaryKey": false,
+              "foreignKey": false,
+              "nullable": true
+            },
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAA670C93570C",
+              "_parent": {
+                "$ref": "AAAAAAEF311FA53C"
+              },
+              "name": "cantidad_producida",
+              "type": "NUMBER",
+              "primaryKey": false,
+              "foreignKey": false,
+              "nullable": true
+            },
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAAB66B89A8E7",
+              "_parent": {
+                "$ref": "AAAAAAEF311FA53C"
+              },
+              "name": "id_lote",
+              "type": "NUMBER",
+              "primaryKey": false,
+              "foreignKey": true,
+              "nullable": false
+            },
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAABB490D9A83",
+              "_parent": {
+                "$ref": "AAAAAAEF311FA53C"
+              },
+              "name": "litros_usados",
+              "type": "NUMBER(10,2)",
+              "primaryKey": false,
+              "foreignKey": false,
+              "nullable": true
+            },
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAA8554ECC3C4",
+              "_parent": {
+                "$ref": "AAAAAAEF311FA53C"
+              },
+              "name": "id_insumo_botella",
+              "type": "NUMBER",
+              "primaryKey": false,
+              "foreignKey": true,
+              "nullable": false
+            },
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAAD4CB6BFBDA",
+              "_parent": {
+                "$ref": "AAAAAAEF311FA53C"
+              },
+              "name": "cant_insumos_usados",
+              "type": "NUMBER",
+              "primaryKey": false,
+              "foreignKey": false,
+              "nullable": true
+            }
+          ]
+        },
+        {
+          "_type": "ERDEntity",
+          "_id": "AAAAAA6D3678D1C2",
+          "_parent": {
+            "$ref": "AAAAAA8549CD0D30"
+          },
+          "name": "CA_EA_ST_IY_CLIENTE",
+          "columns": [
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAABB78175ECB",
+              "_parent": {
+                "$ref": "AAAAAA6D3678D1C2"
+              },
+              "name": "id_cliente",
+              "type": "NUMBER",
+              "primaryKey": true,
+              "foreignKey": false,
+              "nullable": false
+            },
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAA9A7C96975E",
+              "_parent": {
+                "$ref": "AAAAAA6D3678D1C2"
+              },
+              "name": "rut_cliente",
+              "type": "VARCHAR2(12)",
+              "primaryKey": false,
+              "foreignKey": false,
+              "nullable": true
+            },
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAAFD58CF1A35",
+              "_parent": {
+                "$ref": "AAAAAA6D3678D1C2"
+              },
+              "name": "razon_social",
+              "type": "VARCHAR2(100)",
+              "primaryKey": false,
+              "foreignKey": false,
+              "nullable": true
+            },
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAA4D244C5D07",
+              "_parent": {
+                "$ref": "AAAAAA6D3678D1C2"
+              },
+              "name": "direccion",
+              "type": "VARCHAR2(200)",
+              "primaryKey": false,
+              "foreignKey": false,
+              "nullable": true
+            },
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAA5831CEE482",
+              "_parent": {
+                "$ref": "AAAAAA6D3678D1C2"
+              },
+              "name": "pais",
+              "type": "VARCHAR2(50)",
+              "primaryKey": false,
+              "foreignKey": false,
+              "nullable": true
+            }
+          ],
+          "ownedElements": [
+            {
+              "_type": "ERDRelationship",
+              "_id": "AAAAAA96DE1EECDC",
+              "_parent": {
+                "$ref": "AAAAAA6D3678D1C2"
+              },
+              "identifying": false,
+              "end1": {
+                "_type": "ERDRelationshipEnd",
+                "_id": "AAAAAA374DBF4A25",
+                "_parent": {
+                  "$ref": "AAAAAA96DE1EECDC"
+                },
+                "reference": {
+                  "$ref": "AAAAAA6D3678D1C2"
+                },
+                "cardinality": "1"
+              },
+              "end2": {
+                "_type": "ERDRelationshipEnd",
+                "_id": "AAAAAAF9C79DE9BB",
+                "_parent": {
+                  "$ref": "AAAAAA96DE1EECDC"
+                },
+                "reference": {
+                  "$ref": "AAAAAA0A6271F423"
+                },
+                "cardinality": "0..*"
+              }
+            }
+          ]
+        },
+        {
+          "_type": "ERDEntity",
+          "_id": "AAAAAA0A6271F423",
+          "_parent": {
+            "$ref": "AAAAAA8549CD0D30"
+          },
+          "name": "CA_EA_ST_IY_PEDIDO_VENTA",
+          "columns": [
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAAB99C0EE40B",
+              "_parent": {
+                "$ref": "AAAAAA0A6271F423"
+              },
+              "name": "id_pedido",
+              "type": "NUMBER",
+              "primaryKey": true,
+              "foreignKey": false,
+              "nullable": false
+            },
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAAEB38BA2B92",
+              "_parent": {
+                "$ref": "AAAAAA0A6271F423"
+              },
+              "name": "id_cliente",
+              "type": "NUMBER",
+              "primaryKey": false,
+              "foreignKey": true,
+              "nullable": false
+            },
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAAA63BA26892",
+              "_parent": {
+                "$ref": "AAAAAA0A6271F423"
+              },
+              "name": "fecha_pedido",
+              "type": "DATE",
+              "primaryKey": false,
+              "foreignKey": false,
+              "nullable": true
+            },
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAA7AEE54C79E",
+              "_parent": {
+                "$ref": "AAAAAA0A6271F423"
+              },
+              "name": "estado_pedido",
+              "type": "VARCHAR2(50)",
+              "primaryKey": false,
+              "foreignKey": false,
+              "nullable": true
+            }
+          ],
+          "ownedElements": [
+            {
+              "_type": "ERDRelationship",
+              "_id": "AAAAAA856683D932",
+              "_parent": {
+                "$ref": "AAAAAA0A6271F423"
+              },
+              "identifying": false,
+              "end1": {
+                "_type": "ERDRelationshipEnd",
+                "_id": "AAAAAA783082294D",
+                "_parent": {
+                  "$ref": "AAAAAA856683D932"
+                },
+                "reference": {
+                  "$ref": "AAAAAA0A6271F423"
+                },
+                "cardinality": "1"
+              },
+              "end2": {
+                "_type": "ERDRelationshipEnd",
+                "_id": "AAAAAAFD710746CF",
+                "_parent": {
+                  "$ref": "AAAAAA856683D932"
+                },
+                "reference": {
+                  "$ref": "AAAAAAEC9788BEFB"
+                },
+                "cardinality": "0..*"
+              }
+            }
+          ]
+        },
+        {
+          "_type": "ERDEntity",
+          "_id": "AAAAAAEC9788BEFB",
+          "_parent": {
+            "$ref": "AAAAAA8549CD0D30"
+          },
+          "name": "CA_EA_ST_IY_DETALLE_PEDIDO_VENTA",
+          "columns": [
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAAD369994F55",
+              "_parent": {
+                "$ref": "AAAAAAEC9788BEFB"
+              },
+              "name": "id_detalle",
+              "type": "NUMBER",
+              "primaryKey": true,
+              "foreignKey": false,
+              "nullable": false
+            },
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAA4FB974FC66",
+              "_parent": {
+                "$ref": "AAAAAAEC9788BEFB"
+              },
+              "name": "id_pedido",
+              "type": "NUMBER",
+              "primaryKey": false,
+              "foreignKey": true,
+              "nullable": false
+            },
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAAA183DDDD4B",
+              "_parent": {
+                "$ref": "AAAAAAEC9788BEFB"
+              },
+              "name": "id_producto",
+              "type": "NUMBER",
+              "primaryKey": false,
+              "foreignKey": true,
+              "nullable": false
+            },
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAAE192772B69",
+              "_parent": {
+                "$ref": "AAAAAAEC9788BEFB"
+              },
+              "name": "cantidad",
+              "type": "NUMBER",
+              "primaryKey": false,
+              "foreignKey": false,
+              "nullable": true
+            },
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAAAD1640120B",
+              "_parent": {
+                "$ref": "AAAAAAEC9788BEFB"
+              },
+              "name": "precio_unitario",
+              "type": "NUMBER(10,2)",
+              "primaryKey": false,
+              "foreignKey": false,
+              "nullable": true
+            }
+          ]
+        },
+        {
+          "_type": "ERDEntity",
+          "_id": "AAAAAA8769827B5B",
+          "_parent": {
+            "$ref": "AAAAAA8549CD0D30"
+          },
+          "name": "CA_EA_ST_IY_AUDITORIA_MOVIMIENTOS",
+          "columns": [
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAA62B7FD2E4F",
+              "_parent": {
+                "$ref": "AAAAAA8769827B5B"
+              },
+              "name": "id_log",
+              "type": "NUMBER",
+              "primaryKey": true,
+              "foreignKey": false,
+              "nullable": false
+            },
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAA90CE7B6CE8",
+              "_parent": {
+                "$ref": "AAAAAA8769827B5B"
+              },
+              "name": "id_lote",
+              "type": "NUMBER",
+              "primaryKey": false,
+              "foreignKey": false,
+              "nullable": true
+            },
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAA53AD424BA4",
+              "_parent": {
+                "$ref": "AAAAAA8769827B5B"
+              },
+              "name": "usuario_bd",
+              "type": "VARCHAR2(50)",
+              "primaryKey": false,
+              "foreignKey": false,
+              "nullable": true
+            },
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAA4B4C20EA5C",
+              "_parent": {
+                "$ref": "AAAAAA8769827B5B"
+              },
+              "name": "fecha_movimiento",
+              "type": "DATE",
+              "primaryKey": false,
+              "foreignKey": false,
+              "nullable": true
+            },
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAA2A37A47B83",
+              "_parent": {
+                "$ref": "AAAAAA8769827B5B"
+              },
+              "name": "contenedor_origen",
+              "type": "NUMBER",
+              "primaryKey": false,
+              "foreignKey": false,
+              "nullable": true
+            },
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAAC79DEB98A6",
+              "_parent": {
+                "$ref": "AAAAAA8769827B5B"
+              },
+              "name": "contenedor_destino",
+              "type": "NUMBER",
+              "primaryKey": false,
+              "foreignKey": false,
+              "nullable": true
+            },
+            {
+              "_type": "ERDColumn",
+              "_id": "AAAAAA9784AF9510",
+              "_parent": {
+                "$ref": "AAAAAA8769827B5B"
+              },
+              "name": "accion",
+              "type": "VARCHAR2(100)",
+              "primaryKey": false,
+              "foreignKey": false,
+              "nullable": true
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

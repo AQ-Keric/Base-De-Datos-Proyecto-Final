@@ -125,6 +125,7 @@ oci_bind_by_name($stmt_list, ':cursor', $cursor, -1, OCI_B_CURSOR);
     <style>
         .navbar-custom { background-color: #722F37; }
     </style>
+    <link href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" rel="stylesheet">
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
@@ -293,6 +294,21 @@ oci_bind_by_name($stmt_list, ':cursor', $cursor, -1, OCI_B_CURSOR);
       inputCapacidad.value = capacidad;
       inputUsos.value = usos;
     });
+    </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('table.table').each(function () {
+                if ($(this).find('tbody td[colspan]').length === 0) {
+                    $(this).DataTable({
+                        pageLength: 10,
+                        language: { url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/es-ES.json' }
+                    });
+                }
+            });
+        });
     </script>
 </body>
 </html>
