@@ -31,7 +31,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             } else {
                 $e = oci_error($stmt);
                 $error_ocurrido = true;
-                // $mensaje = "Error al crear proveedor: " . $e['message'];
                 $mensaje = "Error: " . mensaje_error($e['message']);
             }
             oci_free_statement($stmt);
@@ -58,7 +57,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             } else {
                 $e = oci_error($stmt);
                 $error_ocurrido = true;
-                // $mensaje = "Error al actualizar proveedor: " . $e['message'];
                 $mensaje = "Error: " . mensaje_error($e['message']);
             }
             oci_free_statement($stmt);
@@ -79,7 +77,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if (strpos($e['message'], 'integrity constraint') !== false) {
                 $mensaje = "Error: No se puede eliminar el proveedor porque tiene insumos asociados.";
             } else {
-                // $mensaje = "Error al eliminar: " . $e['message'];
                 $mensaje = "Error: " . mensaje_error($e['message']);
             }
         }
